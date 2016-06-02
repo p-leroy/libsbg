@@ -1,0 +1,5 @@
+syntax: glob
+*moc_*
+*.so*
+*.o
+ui_*
