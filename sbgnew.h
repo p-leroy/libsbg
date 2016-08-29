@@ -3,9 +3,11 @@
 
 #include <QWidget>
 
+#include "libsbg_global.h"
+
 #include <sbgEComLib.h>
 
-class SbgNew : public QObject
+class LIBSBGSHARED_EXPORT SbgNew : public QObject
 {
     Q_OBJECT
 public:

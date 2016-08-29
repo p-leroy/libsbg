@@ -3,3 +3,5 @@ syntax: glob
 *.so*
 *.o
 ui_*
+debug/
+release/

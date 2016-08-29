@@ -49,6 +49,12 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>SbgConnection</class>
+   <extends>QWidget</extends>
+   <header>sbgconnection.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>SbgEcomLogStatus</class>
    <extends>QWidget</extends>
    <header>sbgecomlogstatus.h</header>
@@ -58,12 +64,6 @@
    <class>SbgEcomLogData</class>
    <extends>QWidget</extends>
    <header>sbgecomlogdata.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SbgConnection</class>
-   <extends>QWidget</extends>
-   <header>sbgconnection.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

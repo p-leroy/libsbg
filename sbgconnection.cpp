@@ -108,8 +108,6 @@ void SbgConnection::startSbgNew()
         connect(sbgNew, SIGNAL(finished()), thread, SLOT(quit()));
         connect(sbgNew, SIGNAL(finished()), sbgNew, SLOT(deleteLater()));
         // SBG EKINOX
-        connect(this, SIGNAL(sig_sbgIpChanged(unsigned char, QByteArray)),
-                this->sbgNew, SLOT(updateSbgIp(unsigned char,unsigned char,unsigned char,unsigned char)), Qt::DirectConnection);
         connect(this, SIGNAL(sig_closeSbgConnection()),
                 this->sbgNew, SLOT(closeSbgConnection()), Qt::DirectConnection);
 

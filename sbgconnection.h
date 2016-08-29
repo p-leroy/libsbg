@@ -6,13 +6,15 @@
 #include <QThread>
 #include <QSettings>
 
+#include "libsbg_global.h"
+
 #include "sbgnew.h"
 
 namespace Ui {
 class SbgConnection;
 }
 
-class SbgConnection : public QWidget
+class LIBSBGSHARED_EXPORT SbgConnection : public QWidget
 {
     Q_OBJECT
 

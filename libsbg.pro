@@ -16,7 +16,8 @@ SOURCES += libsbg.cpp \
     sbgconnection.cpp \
     sbgnew.cpp \
     sbgecomlogstatus.cpp \
-    sbgecomlogdata.cpp
+    sbgecomlogdata.cpp \
+    sbgreadfile.cpp
 
 HEADERS += libsbg.h\
     qwsbg.h \
@@ -24,7 +25,10 @@ HEADERS += libsbg.h\
     sbgconnection.h \
     sbgnew.h \
     sbgecomlogstatus.h \
-    sbgecomlogdata.h
+    sbgecomlogdata.h \
+    sbgreadfile.h
+
+INCLUDEPATH += ../common_posar
 
 unix {
     target.path = /usr/lib
@@ -35,7 +39,8 @@ FORMS += \
     qwsbg.ui \
     sbgconnection.ui \
     sbgecomlogstatus.ui \
-    sbgecomlogdata.ui
+    sbgecomlogdata.ui \
+    sbgreadfile.ui
 
 #######
 #######
@@ -56,9 +61,17 @@ unix{
 ########
 ########
 
+#win32{
+#INCLUDEPATH += \
+#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/src"
+#LIBS += \
+#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/sbgECom.lib"
+#}
+
 win32{
 INCLUDEPATH += \
-    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/src"
+    "C:/SBG/Ekinox/Software Development/sbgECom/src" \
+    "C:/SBG/Ekinox/Software Development/sbgECom/common"
 LIBS += \
-    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/sbgECom.lib"
+    "C:/SBG/Ekinox/Software Development/sbgECom/projects/visual/x64/Debug/sbgEComd.lib"
 }
