@@ -9,7 +9,7 @@
 #include <QSettings>
 #include <QTextStream>
 
-#include <sbgEComLib.h>
+#include "sbgEComLib.h"
 
 #include "libsbg_global.h"
 #include "common_tctmserver.h"
@@ -38,7 +38,6 @@ public:
     static int sbgPollingLoop();
 
 public slots:
-    int chooseFirmwareDirectory( const char *hexFilename );
     int chooseFile(void);
     void readFile(void);
     void displayMessage( QString str, unsigned char level );

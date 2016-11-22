@@ -114,11 +114,11 @@ void SbgReadFile::storeSbgEComLogEkfNav( SbgLogEkfNavData *log )
             << ' '
             << QString::number( log->velocityStdDev[2] )
             << ' '
-            << QString::number( log->position[0] )
+            << QString::number( log->position[0], 'g', 16 )
             << ' '
-            << QString::number( log->position[1] )
+            << QString::number( log->position[1], 'g', 16 )
             << ' '
-            << QString::number( log->position[2] )
+            << QString::number( log->position[2], 'g', 16 )
             << ' '
             << QString::number( log->undulation )
             << ' '
@@ -341,43 +341,6 @@ int SbgReadFile::sbgPollingLoop()
 //******
 //******
 // SLOTS
-
-int SbgReadFile::chooseFirmwareDirectory( const char *hexFilename )
-{
-    QString filenameWithAbsolutePath;
-    QString hexDir;
-    int ret;
-    QFileInfo checkFile;
-
-    ret = POSAR_MC_FAILED;
-
-    hexDir = QFileDialog::getExistingDirectory(
-                NULL,
-                "choose hex files directory",
-                QDir::homePath());
-
-    if (hexDir.isEmpty())
-    {
-        ret = POSAR_MC_FAILED;
-        emit newMessage("SbgReadFile::choseFirmwareDirectory *** ERR directory not valid", LEVEL_ERR);
-    }
-    else
-    {
-        emit newMessage("SbgReadFile::choseFirmwareDirectory *** selected directory: " + QString(hexDir), LEVEL_OK );
-        dataStorageDirectory = hexDir;
-        checkFile = QFileInfo( filenameWithAbsolutePath);
-        if (checkFile.exists())
-            ret = POSAR_MC_SUCCESSFUL;
-        else
-        {
-            ret = POSAR_MC_FAILED;
-            emit newMessage("SbgReadFile::choseFirmwareDirectory *** file does not exist: "
-                            + filenameWithAbsolutePath, LEVEL_ERR);
-        }
-    }
-
-    return ret;
-}
 
 int SbgReadFile::chooseFile(void)
 {

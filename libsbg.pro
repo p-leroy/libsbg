@@ -45,21 +45,18 @@ FORMS += \
 #######
 #######
 ## UNIX
-#######
-#######
 
 unix{
     INCLUDEPATH += \
-        /opt/SBG/Ekinox/Software_Development/sbgECom/src
+        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/src" \
+        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/common"
     LIBS += \
-        /opt/SBG/Ekinox/Software_Development/sbgECom/libSbgECom.a
+        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/bin/libsbgECom.a"
 }
 
 ########
 ########
 ## WIN32
-########
-########
 
 #win32{
 #INCLUDEPATH += \
@@ -75,3 +72,15 @@ INCLUDEPATH += \
 LIBS += \
     "C:/SBG/Ekinox/Software Development/sbgECom/projects/visual/x64/Debug/sbgEComd.lib"
 }
+
+##########
+##########
+## INSTALL
+
+headersDataFiles.path = $$[QT_INSTALL_HEADERS]/ietr/
+headersDataFiles.files = $$PWD/*.h
+INSTALLS += headersDataFiles
+
+libraryFiles.path = $$[QT_INSTALL_LIBS]
+libraryFiles.files = *$$[TARGET].so*
+INSTALLS += libraryFiles
