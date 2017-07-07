@@ -349,10 +349,20 @@ int SbgReadFile::chooseFile(void)
 
     ret = POSAR_MC_FAILED;
 
-    filenameWithAbsolutePath = QFileDialog::getOpenFileName(NULL,
-                                                            "select a data file from the SBG Inertial Navigation System",
-                                                            QDir::homePath(),
-                                                            "(*.bin)");
+    if (QDir(dataStorageDirectory).exists())
+    {
+        filenameWithAbsolutePath = QFileDialog::getOpenFileName(NULL,
+                                                                "select a data file from the SBG Inertial Navigation System",
+                                                                dataStorageDirectory,
+                                                                "(*.bin)");
+    }
+    else
+    {
+        filenameWithAbsolutePath = QFileDialog::getOpenFileName(NULL,
+                                                                "select a data file from the SBG Inertial Navigation System",
+                                                                QDir::homePath(),
+                                                                "(*.bin)");
+    }
 
     if (filenameWithAbsolutePath.isEmpty())
     {

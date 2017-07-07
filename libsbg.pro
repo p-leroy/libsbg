@@ -28,12 +28,7 @@ HEADERS += libsbg.h\
     sbgecomlogdata.h \
     sbgreadfile.h
 
-INCLUDEPATH += ../common_posar
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+INCLUDEPATH += ../../POSAR-MC/common_posar
 
 FORMS += \
     qwsbg.ui \
@@ -48,10 +43,10 @@ FORMS += \
 
 unix{
     INCLUDEPATH += \
-        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/src" \
-        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/common"
+        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/src" \
+        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/common"
     LIBS += \
-        "/opt/SBG/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/bin/libsbgECom.a"
+        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/bin/libsbgECom.a"
 }
 
 ########
@@ -77,10 +72,12 @@ LIBS += \
 ##########
 ## INSTALL
 
-headersDataFiles.path = $$[QT_INSTALL_HEADERS]/ietr/
-headersDataFiles.files = $$PWD/*.h
-INSTALLS += headersDataFiles
+target.path = $$[QT_INSTALL_LIBS]
+isEmpty(target.path) {
+    error(can\'t get QT_INSTALL_LIBS)
+}
 
-libraryFiles.path = $$[QT_INSTALL_LIBS]
-libraryFiles.files = *$$[TARGET].so*
-INSTALLS += libraryFiles
+headers.path = $$[QT_INSTALL_HEADERS]/ietr/sbg
+headers.files = $$PWD/*.h
+
+INSTALLS += headers target
