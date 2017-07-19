@@ -8,6 +8,8 @@
 
 #include "sbgnew.h"
 
+#include "libsbg_global.h"
+
 namespace Ui {
 class SbgConnection;
 }
