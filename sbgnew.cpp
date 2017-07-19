@@ -168,8 +168,9 @@ int SbgNew::sbgPollingLoop()
             sbgEComSetReceiveCallback(&comHandle, onLogReceived, NULL);
 
             //
-            // Loop until the user exist
+            // Loop until the user exits
             //
+            emit sbgNew->isReady( true );
             while (continueExecution)
             {
                 //QCoreApplication::processEvents();
@@ -235,8 +236,10 @@ int SbgNew::sbgPollingLoop()
 
     continueExecution = true;
 
-    emit sbgNew->finished();
+    emit sbgNew->isReady( false );
     emit sbgNew->sendMessage("sbgPollingLoop *** end of sbgPollingLoop");
+    QApplication::processEvents();
+    emit sbgNew->finished();
 
     return retValue;
 }

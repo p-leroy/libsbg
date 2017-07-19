@@ -2,6 +2,7 @@
 #define SBGNEW_H
 
 #include <QWidget>
+#include <QApplication>
 
 #include <sbgEComLib.h>
 
@@ -36,6 +37,7 @@ signals:
     void newSbgEcomLogGPS1Pos( QByteArray array );
     void newSbgEcomLogGPS1Hdt( QByteArray array );
     void finished();
+    void isReady( bool );
 
 public slots:
     void initSbg();

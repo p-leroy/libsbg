@@ -7,8 +7,10 @@ SbgConnection::SbgConnection(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    threadRunning = false;
+
     connect( this->ui->iPLineEdit, SIGNAL(editingFinished()), this, SLOT(updateSbgIp()) );
-    connect( this->ui->pushButton_connectToSbg, SIGNAL(clicked(bool)), this, SLOT(startSbgNew()) );
+    connect( this->ui->pushButton_connectToSbg, SIGNAL(toggled(bool)), this, SLOT(sbgConnectionRequested(bool)) );
 
     readSettings();
 }
@@ -88,10 +90,8 @@ void SbgConnection::updateSbgIp()
     }
 }
 
-void SbgConnection::startSbgNew()
+void SbgConnection::toggleSbgNew()
 {
-    static bool threadRunning = false;
-
     if (threadRunning)
     {
         emit sig_closeSbgConnection();
@@ -116,6 +116,7 @@ void SbgConnection::startSbgNew()
         //****************
         // forward signals
         connect( this->sbgNew, SIGNAL(sendMessage(QString)),                this, SLOT(forwardMessage(QString)) );
+        connect( this->sbgNew, SIGNAL(isReady(bool)),                       this, SLOT(forwardIsReady(bool)));
         connect( this->sbgNew, SIGNAL(newSbgEcomLogStatus(QByteArray)),     this, SLOT(forwardNewSbgEcomLogStatus(QByteArray)) );
         connect( this->sbgNew, SIGNAL(newSbgEcomLogEkfEuler(QByteArray)),   this, SLOT(forwardNewSbgEcomLogEkfEuler(QByteArray)) );
         connect( this->sbgNew, SIGNAL(newSbgEcomLogEkfNav(QByteArray)),     this, SLOT(forwardNewSbgEcomLogEkfNav(QByteArray)) );
@@ -133,5 +134,18 @@ void SbgConnection::startSbgNew()
 
         thread->start();
         threadRunning = true;
+    }
+}
+
+void SbgConnection::sbgConnectionRequested(bool state)
+{
+    if (state!=threadRunning)
+    {
+        toggleSbgNew();
+        this->ui->pushButton_connectToSbg->setChecked( state );
+        if (state == true)
+            this->ui->pushButton_connectToSbg->setText("Disconnect");
+        else
+            this->ui->pushButton_connectToSbg->setText("Connect");
     }
 }

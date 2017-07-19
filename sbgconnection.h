@@ -12,7 +12,7 @@ namespace Ui {
 class SbgConnection;
 }
 
-class SbgConnection : public QWidget
+class LIBSBGSHARED_EXPORT SbgConnection : public QWidget
 {
     Q_OBJECT
 
@@ -32,6 +32,7 @@ signals:
     void newSbgEcomLogGPS1Vel( QByteArray array );
     void newSbgEcomLogGPS1Pos( QByteArray array );
     void newSbgEcomLogGPS1Hdt( QByteArray array );
+    void isReady( bool );
 
 private:
     Ui::SbgConnection *ui;
@@ -43,10 +44,14 @@ private:
     unsigned char sbgIp2;
     unsigned char sbgIp3;
 
+    bool threadRunning;
+
 public slots:
     void updateSbgIp();
-    void startSbgNew();
+    void toggleSbgNew();
+    void sbgConnectionRequested(bool state);
     void forwardMessage(QString str) { emit sendMessage(str); }
+    void forwardIsReady(bool state) { emit isReady(state); }
     void forwardNewSbgEcomLogStatus(    QByteArray array ) {emit newSbgEcomLogStatus(   array );}
     void forwardNewSbgEcomLogEkfEuler(  QByteArray array ) {emit newSbgEcomLogEkfEuler( array );}
     void forwardNewSbgEcomLogEkfNav(    QByteArray array ) {emit newSbgEcomLogEkfNav(   array );}
