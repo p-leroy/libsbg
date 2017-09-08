@@ -146,4 +146,6 @@ void SbgConnection::sbgConnectionRequested(bool state)
         else
             this->ui->pushButton_connectToSbg->setText("Connect");
     }
+    else
+        emit isReady( true );
 }

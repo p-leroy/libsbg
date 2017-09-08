@@ -62,10 +62,12 @@ unix{
 
 win32{
 INCLUDEPATH += \
-    "C:/SBG/Ekinox/Software Development/sbgECom/src" \
-    "C:/SBG/Ekinox/Software Development/sbgECom/common"
+    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\src" \
+    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\common" \
+    "C:\Documents and Settings\Administrateur\Mes documents\PAUL\SOFTWARE\common_posar"
+
 LIBS += \
-    "C:/SBG/Ekinox/Software Development/sbgECom/projects/visual/x64/Debug/sbgEComd.lib"
+    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\sbgEComd.lib"
 }
 
 ##########
