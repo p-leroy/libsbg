@@ -34,6 +34,8 @@ public:
     static void storeSbgEComLogEkfEuler( SbgLogEkfEulerData *log );
     static void storeSbgEComLogEkfNav( SbgLogEkfNavData *log );
     static void storeSbgEComLogEventB( SbgLogEvent *log );
+    static void storeSbgEComLogStatus( SbgLogStatusData *log );
+    static void storeSbgLogUtcData( SbgLogUtcData *log );
     static SbgErrorCode onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg);
     static int sbgPollingLoop();
 
@@ -59,6 +61,10 @@ private:
     static QTextStream *sbgEComLogEventB_Strm;
     static QFile *sbgEComLogEkfNav_File;
     static QTextStream *sbgEComLogEkfNav_Strm;
+    static QFile *sbgEComLogStatus_File;
+    static QTextStream *sbgEComLogStatus_Strm;
+    static QFile *sbgLogUtcData_File;
+    static QTextStream *sbgLogUtcData_Strm;
 
     static SbgReadFile *sbgReadFile;
     static bool continueExecution;
@@ -72,6 +78,7 @@ private:
     static unsigned int sbgEComLogGPS1Vel;
     static unsigned int sbgEComLogGPS1Pos;
     static unsigned int sbgEComLogGPS1Hdt;
+    static unsigned int sbgLogUtcData;
     static uint32 cursorPosition;
     static int delta;
     static int fileSize;

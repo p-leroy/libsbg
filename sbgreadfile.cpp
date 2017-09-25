@@ -13,6 +13,7 @@ unsigned int SbgReadFile::sbgEComLogEventB;
 unsigned int SbgReadFile::sbgEComLogGPS1Vel;
 unsigned int SbgReadFile::sbgEComLogGPS1Pos;
 unsigned int SbgReadFile::sbgEComLogGPS1Hdt;
+unsigned int SbgReadFile::sbgLogUtcData;
 uint32 SbgReadFile::cursorPosition;
 int SbgReadFile::delta;
 int SbgReadFile::fileSize;
@@ -23,6 +24,10 @@ QFile *SbgReadFile::sbgEComLogEkfNav_File = NULL;
 QTextStream *SbgReadFile::sbgEComLogEkfNav_Strm = NULL;
 QFile *SbgReadFile::sbgEComLogEventB_File = NULL;
 QTextStream *SbgReadFile::sbgEComLogEventB_Strm = NULL;
+QFile *SbgReadFile::sbgEComLogStatus_File = NULL;
+QTextStream *SbgReadFile::sbgEComLogStatus_Strm = NULL;
+QFile *SbgReadFile::sbgLogUtcData_File = NULL;
+QTextStream *SbgReadFile::sbgLogUtcData_Strm = NULL;
 
 SbgReadFile::SbgReadFile(QWidget *parent) :
     QWidget(parent),
@@ -38,6 +43,10 @@ SbgReadFile::SbgReadFile(QWidget *parent) :
     sbgEComLogEkfNav_Strm = new QTextStream();
     sbgEComLogEventB_File = new QFile();
     sbgEComLogEventB_Strm = new QTextStream();
+    sbgEComLogStatus_File = new QFile();
+    sbgEComLogStatus_Strm = new QTextStream();
+    sbgLogUtcData_File = new QFile();
+    sbgLogUtcData_Strm = new QTextStream();
 
     initStat();
     readSettings();
@@ -150,6 +159,52 @@ void SbgReadFile::storeSbgEComLogEventB( SbgLogEvent *log )
             << endl;
 }
 
+void SbgReadFile::storeSbgEComLogStatus(SbgLogStatusData *log)
+{
+    *(sbgEComLogStatus_Strm)
+            << QString::number( log->timeStamp )
+            << ' '
+            << QString::number( log->generalStatus )
+            << ' '
+            << QString::number( log->reserved1 )
+            << ' '
+            << QString::number( log->comStatus )
+            << ' '
+            << QString::number( log->aidingStatus )
+            << ' '
+            << QString::number( log->reserved2 )
+            << ' '
+            << QString::number( log->reserved3 )
+            << ' '
+            << endl;
+}
+
+void SbgReadFile::storeSbgLogUtcData( SbgLogUtcData *log )
+{
+    *(sbgLogUtcData_Strm)
+            << QString::number( log->timeStamp )
+            << ' '
+            << QString::number( log->status )
+            << ' '
+            << QString::number( log->year )
+            << ' '
+            << QString::number( log->month )
+            << ' '
+            << QString::number( log->day )
+            << ' '
+            << QString::number( log->hour )
+            << ' '
+            << QString::number( log->minute )
+            << ' '
+            << QString::number( log->second )
+            << ' '
+            << QString::number( log->nanoSecond )
+            << ' '
+            << QString::number( log->gpsTimeOfWeek )
+            << ' '
+            << endl;
+}
+
 SbgErrorCode SbgReadFile::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg)
 {
     static uint32 nbSbgEComLogStatus = 0;
@@ -159,6 +214,7 @@ SbgErrorCode SbgReadFile::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId log
 
     case SBG_ECOM_LOG_STATUS:
         sbgEComLogStatus++;
+        storeSbgEComLogStatus( (SbgLogStatusData*) pLogData );
         nbSbgEComLogStatus++;
         break;
 
@@ -187,6 +243,11 @@ SbgErrorCode SbgReadFile::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId log
         break;
 
     case SBG_ECOM_LOG_GPS1_HDT:
+        break;
+
+    case SBG_ECOM_LOG_UTC_TIME:
+        sbgLogUtcData++;
+        storeSbgLogUtcData( (SbgLogUtcData*) pLogData );
         break;
 
     default:
@@ -332,6 +393,8 @@ int SbgReadFile::sbgPollingLoop()
     sbgEComLogEkfEuler_File->close();
     sbgEComLogEkfNav_File->close();
     sbgEComLogEventB_File->close();
+    sbgEComLogStatus_File->close();
+    sbgLogUtcData_File->close();
 
     emit sbgReadFile->newMessage( "sbgPollingLoop *** end of sbgPollingLoop", LEVEL_OK);
 
@@ -389,10 +452,14 @@ void SbgReadFile::readFile(void)
     QString sbgEComLogEkfEuler_filename;
     QString sbgEComLogEkfNav_filename;
     QString sbgEComLogEventB_filename;
+    QString sbgEComLogStatus_filename;
+    QString sbgLogUtcData_filename;
 
-    sbgEComLogEkfEuler_filename = dataStorageDirectory + "/sbgEComLogEkfEuler.dat";
-    sbgEComLogEkfNav_filename = dataStorageDirectory + "/sbgEComLogEkfNav.dat";
-    sbgEComLogEventB_filename = dataStorageDirectory + "/sbgEComLogEventB.dat";
+    sbgEComLogEkfEuler_filename = dataStorageDirectory + "/sbgLogEkfEuler.dat";
+    sbgEComLogEkfNav_filename = dataStorageDirectory + "/sbgLogEkfNav.dat";
+    sbgEComLogEventB_filename = dataStorageDirectory + "/sbgLogEventB.dat";
+    sbgEComLogStatus_filename = dataStorageDirectory + "/sbgLogStatus.dat";
+    sbgLogUtcData_filename = dataStorageDirectory + "/sbgLogUtcStatus.dat";
 
     //************************************
     //************************************
@@ -443,6 +510,34 @@ void SbgReadFile::readFile(void)
         newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
                     + sbgEComLogEventB_filename, LEVEL_ERR );
 
+    //*****************
+    // SbgEComLogStatus
+    sbgEComLogStatus_File->setFileName (sbgEComLogStatus_filename );
+    if (sbgEComLogStatus_File->open(QIODevice::WriteOnly))
+    {
+        sbgEComLogStatus_Strm->setDevice( sbgEComLogStatus_File );
+        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                    + sbgEComLogStatus_filename, LEVEL_OK );
+        *(this->sbgEComLogStatus_Strm) << "timeStamp generalStatus reserved1 comStatus aidingStatus reserved2 reserved3" << endl;
+    }
+    else
+        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                    + sbgEComLogStatus_filename, LEVEL_ERR );
+
+    //**************
+    // SbgLogUtcData
+    sbgLogUtcData_File->setFileName ( sbgLogUtcData_filename );
+    if (sbgLogUtcData_File->open(QIODevice::WriteOnly))
+    {
+        sbgLogUtcData_Strm->setDevice( sbgLogUtcData_File );
+        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                    + sbgLogUtcData_filename, LEVEL_OK );
+        *(this->sbgLogUtcData_Strm) << "timeStamp status year month day hour minute second nanoSecond gpsTimeOfWeek" << endl;
+    }
+    else
+        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                    + sbgLogUtcData_filename, LEVEL_ERR );
+
     QApplication::processEvents();
 
     fileInfo = QFileInfo( dataStorageDirectory + "/" + dataFile );
@@ -487,6 +582,7 @@ void SbgReadFile::initStat()
     sbgEComLogGPS1Vel = 0;
     sbgEComLogGPS1Pos = 0;
     sbgEComLogGPS1Hdt = 0;
+    sbgLogUtcData = 0;
     cursorPosition = 0;
     delta = 0;
 }
@@ -497,6 +593,7 @@ void SbgReadFile::updateStat()
     ui->label_sbgEComLogEkfEuler->setText( QString::number( sbgEComLogEkfEuler ) );
     ui->label_sbgEComLogEkfNav->setText( QString::number( sbgEComLogEkfNav ) );
     ui->label_sbgEComLogEventB->setText( QString::number( sbgEComLogEventB ) );
+    ui->label_sbgLogUtcData->setText( QString::number( sbgLogUtcData ) );
     ui->label_position->setText( QString::number( cursorPosition ) );
     ui->label_delta->setText( QString::number( delta ) );
 }
