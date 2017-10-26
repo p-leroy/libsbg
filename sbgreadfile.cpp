@@ -10,10 +10,12 @@ unsigned int SbgReadFile::sbgEComLogEkfEuler;
 unsigned int SbgReadFile::sbgEComLogEkfQuat;
 unsigned int SbgReadFile::sbgEComLogEkfNav;
 unsigned int SbgReadFile::sbgEComLogEventB;
-unsigned int SbgReadFile::sbgEComLogGPS1Vel;
-unsigned int SbgReadFile::sbgEComLogGPS1Pos;
-unsigned int SbgReadFile::sbgEComLogGPS1Hdt;
 unsigned int SbgReadFile::sbgLogUtcData;
+// GPS
+unsigned int SbgReadFile::sbgLogGpsPos;
+bool SbgReadFile::storeGpsPos;
+unsigned int SbgReadFile::sbgLogGpsVel;
+
 uint32 SbgReadFile::cursorPosition;
 int SbgReadFile::delta;
 int SbgReadFile::fileSize;
@@ -28,6 +30,11 @@ QFile *SbgReadFile::sbgEComLogStatus_File = NULL;
 QTextStream *SbgReadFile::sbgEComLogStatus_Strm = NULL;
 QFile *SbgReadFile::sbgLogUtcData_File = NULL;
 QTextStream *SbgReadFile::sbgLogUtcData_Strm = NULL;
+// GPS
+QFile *SbgReadFile::sbgLogGpsPos_File = NULL;
+QTextStream *SbgReadFile::sbgLogGpsPos_Strm = NULL;
+QFile *SbgReadFile::sbgLogGpsVel_File = NULL;
+QTextStream *SbgReadFile::sbgLogGpsVel_Strm = NULL;
 
 SbgReadFile::SbgReadFile(QWidget *parent) :
     QWidget(parent),
@@ -47,6 +54,11 @@ SbgReadFile::SbgReadFile(QWidget *parent) :
     sbgEComLogStatus_Strm = new QTextStream();
     sbgLogUtcData_File = new QFile();
     sbgLogUtcData_Strm = new QTextStream();
+    // GPS
+    sbgLogGpsPos_File = new QFile();
+    sbgLogGpsPos_Strm = new QTextStream();
+    sbgLogGpsVel_File = new QFile();
+    sbgLogGpsVel_Strm = new QTextStream();
 
     initStat();
     readSettings();
@@ -58,6 +70,10 @@ SbgReadFile::SbgReadFile(QWidget *parent) :
 
     connect( this, SIGNAL(newMessage(QString,unsigned char)),
              this, SLOT(displayMessage(QString,unsigned char)) );
+
+    connect( this->ui->checkBox_sbgLogGpsPos, SIGNAL(clicked(bool)), this, SLOT(updateStoreGpsPos(bool)) );
+
+    storeGpsPos = false;
 }
 
 SbgReadFile::~SbgReadFile()
@@ -205,6 +221,66 @@ void SbgReadFile::storeSbgLogUtcData( SbgLogUtcData *log )
             << endl;
 }
 
+void SbgReadFile::storeSbgLogGpsPos(SbgLogGpsPos *log)
+{
+    *(sbgLogGpsPos_Strm)
+            << QString::number( log->timeStamp )
+            << ", "
+            << QString::number( log->status )
+            << ", "
+            << QString::number( log->timeOfWeek )
+            << ", "
+            << QString::number( log->latitude, 'g', 16 )
+            << ", "
+            << QString::number( log->longitude, 'g', 16 )
+            << ", "
+            << QString::number( log->altitude, 'g', 16 )
+            << ", "
+            << QString::number( log->undulation )
+            << ", "
+            << QString::number( log->latitudeAccuracy )
+            << ", "
+            << QString::number( log->longitudeAccuracy )
+            << ", "
+            << QString::number( log->altitudeAccuracy )
+            << ", "
+            << QString::number( log->numSvUsed )
+            << ", "
+            << QString::number( log->baseStationId )
+            << ", "
+            << QString::number( log->differentialAge )
+            << ", "
+            << endl;
+}
+
+void SbgReadFile::storeSbgLogGpsVel(SbgLogGpsVel *log)
+{
+        *(sbgLogGpsVel_Strm)
+                << QString::number( log->timeStamp )
+                << ' '
+                << QString::number( log->status )
+                << ' '
+                << QString::number( log->timeOfWeek )
+                << ' '
+                << QString::number( log->velocity[0] )
+                << ' '
+                << QString::number( log->velocity[1] )
+                << ' '
+                << QString::number( log->velocity[2] )
+                << ' '
+                << QString::number( log->velocityAcc[0] )
+                << ' '
+                << QString::number( log->velocityAcc[1] )
+                << ' '
+                << QString::number( log->velocityAcc[2] )
+                << ' '
+                << QString::number( log->course )
+                << ' '
+                << QString::number( log->courseAcc )
+                << ' '
+                << endl;
+}
+
 SbgErrorCode SbgReadFile::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg)
 {
     static uint32 nbSbgEComLogStatus = 0;
@@ -236,18 +312,31 @@ SbgErrorCode SbgReadFile::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId log
         storeSbgEComLogEventB( (SbgLogEvent*) pLogData );
         break;
 
-    case SBG_ECOM_LOG_GPS1_VEL:
-        break;
-
-    case SBG_ECOM_LOG_GPS1_POS:
-        break;
-
-    case SBG_ECOM_LOG_GPS1_HDT:
-        break;
-
     case SBG_ECOM_LOG_UTC_TIME:
         sbgLogUtcData++;
         storeSbgLogUtcData( (SbgLogUtcData*) pLogData );
+        break;
+
+        //*****
+        //*****
+        // GPS1
+    case SBG_ECOM_LOG_GPS1_VEL:
+        sbgLogGpsVel++;
+        if ( storeGpsPos )
+        {
+            storeSbgLogGpsVel( (SbgLogGpsVel*) pLogData );
+        }
+        break;
+
+    case SBG_ECOM_LOG_GPS1_POS:
+        sbgLogGpsPos++;
+        if ( storeGpsPos )
+        {
+            storeSbgLogGpsPos( (SbgLogGpsPos*) pLogData );
+        }
+        break;
+
+    case SBG_ECOM_LOG_GPS1_HDT:
         break;
 
     default:
@@ -454,12 +543,16 @@ void SbgReadFile::readFile(void)
     QString sbgEComLogEventB_filename;
     QString sbgEComLogStatus_filename;
     QString sbgLogUtcData_filename;
+    QString sbgLogGpsPos_filename;
+    QString sbgLogGpsVel_filename;
 
     sbgEComLogEkfEuler_filename = dataStorageDirectory + "/sbgLogEkfEuler.dat";
     sbgEComLogEkfNav_filename = dataStorageDirectory + "/sbgLogEkfNav.dat";
     sbgEComLogEventB_filename = dataStorageDirectory + "/sbgLogEventB.dat";
     sbgEComLogStatus_filename = dataStorageDirectory + "/sbgLogStatus.dat";
-    sbgLogUtcData_filename = dataStorageDirectory + "/sbgLogUtcStatus.dat";
+    sbgLogUtcData_filename = dataStorageDirectory + "/sbgLogUtcData.dat";
+    sbgLogGpsPos_filename = dataStorageDirectory + "/sbgLogGpsPos.csv";
+    sbgLogGpsVel_filename = dataStorageDirectory + "/sbgLogGpsVel.dat";
 
     //************************************
     //************************************
@@ -538,6 +631,36 @@ void SbgReadFile::readFile(void)
         newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
                     + sbgLogUtcData_filename, LEVEL_ERR );
 
+    //*************
+    // SbgLogGpsPos
+    sbgLogGpsPos_File->setFileName ( sbgLogGpsPos_filename );
+    if (sbgLogGpsPos_File->open(QIODevice::WriteOnly))
+    {
+        sbgLogGpsPos_Strm->setDevice( sbgLogGpsPos_File );
+        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                    + sbgLogGpsPos_filename, LEVEL_OK );
+        *(this->sbgLogGpsPos_Strm) << "timeStamp, status, timeOfWeek, latitude, longitude, altitude, latitudeAccuracy, "
+                                       "longitudeAccuracy, altitudeAccuracy, numSvUsed, baseStationId, differentialAge," << endl;
+    }
+    else
+        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                    + sbgLogGpsPos_filename, LEVEL_ERR );
+
+    //*************
+    // SbgLogGpsVel
+    sbgLogGpsVel_File->setFileName ( sbgLogGpsVel_filename );
+    if (sbgLogGpsVel_File->open(QIODevice::WriteOnly))
+    {
+        sbgLogGpsVel_Strm->setDevice( sbgLogGpsVel_File );
+        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                    + sbgLogGpsVel_filename, LEVEL_OK );
+        *(this->sbgLogGpsVel_Strm) << "timeStamp status timeOfWeek velocityNorth velocityEast velocityDow "
+                                       "velocityAccNorth velocityAccEast velocityAccDown course courseAcc" << endl;
+    }
+    else
+        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                    + sbgLogGpsVel_filename, LEVEL_ERR );
+
     QApplication::processEvents();
 
     fileInfo = QFileInfo( dataStorageDirectory + "/" + dataFile );
@@ -579,10 +702,10 @@ void SbgReadFile::initStat()
     sbgEComLogEkfQuat = 0;
     sbgEComLogEkfNav = 0;
     sbgEComLogEventB = 0;
-    sbgEComLogGPS1Vel = 0;
-    sbgEComLogGPS1Pos = 0;
-    sbgEComLogGPS1Hdt = 0;
     sbgLogUtcData = 0;
+    // GPS
+    sbgLogGpsPos = 0;
+    sbgLogGpsVel= 0;
     cursorPosition = 0;
     delta = 0;
 }
@@ -596,4 +719,12 @@ void SbgReadFile::updateStat()
     ui->label_sbgLogUtcData->setText( QString::number( sbgLogUtcData ) );
     ui->label_position->setText( QString::number( cursorPosition ) );
     ui->label_delta->setText( QString::number( delta ) );
+    // GPS
+    ui->label_sbgLogGpsPos->setText(QString::number( sbgLogGpsPos ));
+    ui->label_sbgLogGpsVel->setText(QString::number( sbgLogGpsVel ));
+}
+
+void SbgReadFile::updateStoreGpsPos( bool status )
+{
+    storeGpsPos = status;
 }

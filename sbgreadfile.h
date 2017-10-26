@@ -36,6 +36,8 @@ public:
     static void storeSbgEComLogEventB( SbgLogEvent *log );
     static void storeSbgEComLogStatus( SbgLogStatusData *log );
     static void storeSbgLogUtcData( SbgLogUtcData *log );
+    static void storeSbgLogGpsPos( SbgLogGpsPos *log );
+    static void storeSbgLogGpsVel( SbgLogGpsVel *log );
     static SbgErrorCode onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg);
     static int sbgPollingLoop();
 
@@ -45,6 +47,7 @@ public slots:
     void displayMessage( QString str, unsigned char level );
     void initStat();
     void updateStat();
+    void updateStoreGpsPos( bool status );
 
 signals:
     void newMessage( QString, unsigned char );
@@ -65,6 +68,13 @@ private:
     static QTextStream *sbgEComLogStatus_Strm;
     static QFile *sbgLogUtcData_File;
     static QTextStream *sbgLogUtcData_Strm;
+    // GPS
+    static QFile *sbgLogGpsPos_File;
+    static QTextStream *sbgLogGpsPos_Strm;
+    static bool storeGpsPos;
+    static QFile *sbgLogGpsVel_File;
+    static QTextStream *sbgLogGpsVel_Strm;
+
 
     static SbgReadFile *sbgReadFile;
     static bool continueExecution;
@@ -75,10 +85,10 @@ private:
     static unsigned int sbgEComLogEkfQuat;
     static unsigned int sbgEComLogEkfNav;
     static unsigned int sbgEComLogEventB;
-    static unsigned int sbgEComLogGPS1Vel;
-    static unsigned int sbgEComLogGPS1Pos;
-    static unsigned int sbgEComLogGPS1Hdt;
     static unsigned int sbgLogUtcData;
+    // GPS
+    static unsigned int sbgLogGpsPos;
+    static unsigned int sbgLogGpsVel;
     static uint32 cursorPosition;
     static int delta;
     static int fileSize;

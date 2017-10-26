@@ -1121,35 +1121,7 @@ qwsbg.o: qwsbg.cpp qwsbg.h \
 		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogUsbl.h \
 		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogUtc.h \
 		libsbg_global.h \
-		ui_qwsbg.h \
-		sbgconnection.h \
-		sbgnew.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/sbgEComLib.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/crc/sbgCrc.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/interfaces/sbgInterfaceUdp.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/interfaces/sbgInterfaceSerial.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/interfaces/sbgInterfaceFile.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/splitBuffer/sbgSplitBuffer.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/network/sbgNetwork.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/common/swap/sbgSwap.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/sbgECanId.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmd.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdAdvanced.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdCommon.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdEvent.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdFeatures.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdGnss.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdInfo.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdInterface.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdLicense.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdMag.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdOdo.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdOutput.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSensor.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
-		/opt/InertialSDK_Unix_v3.5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
-		sbgecomlogdata.h \
-		sbgecomlogstatus.h
+		ui_qwsbg.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qwsbg.o qwsbg.cpp
 
 sbgconnection.o: sbgconnection.cpp sbgconnection.h \
@@ -1417,30 +1389,20 @@ install_headers: first FORCE
 	@test -d $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg || mkdir -p $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/libsbg.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/libsbg_global.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
-	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/qwsbg.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/sbgconnection.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/sbgecomlogdata.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/sbgecomlogstatus.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/sbgnew.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/sbgreadfile.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
-	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/ui_qwsbg.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
-	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/ui_sbgconnection.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
-	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/ui_sbgecomlogdata.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
-	-$(INSTALL_FILE) /home/pleroy/DEV/COMMON/libsbg/ui_sbgecomlogstatus.h $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/
 
 uninstall_headers: FORCE
-	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/ui_sbgecomlogstatus.h
-	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/ui_sbgecomlogdata.h
-	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/ui_sbgconnection.h
-	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/ui_qwsbg.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/sbgreadfile.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/sbgnew.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/sbgecomlogstatus.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/sbgecomlogdata.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/sbgconnection.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/qwsbg.h
-	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/moc_predefs.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/libsbg_global.h
 	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/libsbg.h
 	-$(DEL_DIR) $(INSTALL_ROOT)/usr/include/qt5/ietr/sbg/ 
