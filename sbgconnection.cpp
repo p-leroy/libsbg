@@ -135,6 +135,11 @@ void SbgConnection::toggleSbgNew()
     }
 }
 
+void SbgConnection::setConnectToSbg(bool state)
+{
+    ui->pushButton_connectToSbg->setChecked(state);
+}
+
 void SbgConnection::sbgConnectionRequested(bool state)
 {
     if (state!=threadRunning)

@@ -53,6 +53,7 @@ private:
 public slots:
     void updateSbgIp();
     void toggleSbgNew();
+    void setConnectToSbg(bool state);
     void sbgConnectionRequested(bool state);
     void forwardMessage(QString str) { emit sendMessage(str); }
     void forwardIsReady(bool state) { emit isReady(state); }
