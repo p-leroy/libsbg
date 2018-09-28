@@ -160,8 +160,6 @@ int SbgNew::sbgPollingLoop()
         //
         if (errorCode == SBG_NO_ERROR)
         {
-            printf("sbgECom properly Initialized.\n\nEuler Angles display with estimated standard deviation.\n");
-
             //
             // Define callbacks for received data
             //

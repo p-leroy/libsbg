@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += widgets
-
+CONFIG += debug
 TARGET = libsbg
 TEMPLATE = lib
 
@@ -79,7 +79,7 @@ isEmpty(target.path) {
     error(can\'t get QT_INSTALL_LIBS)
 }
 
-headers.path = $$[QT_INSTALL_HEADERS]/ietr/sbg
+headers.path = $$[QT_INSTALL_HEADERS]/common_ple/sbg
 headers.files = $$PWD/*.h
 
 INSTALLS += headers target
