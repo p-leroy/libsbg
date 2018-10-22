@@ -62,12 +62,16 @@ unix{
 
 win32{
 INCLUDEPATH += \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\src" \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\common" \
-    "C:\Documents and Settings\Administrateur\Mes documents\PAUL\SOFTWARE\common_posar"
+    "../common_posar" \
+    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\src" \
+    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\common" \
+    "C:\Documents and Settings\Administrateur\Mes documents\PAUL\SOFTWARE\common_posar" \
 
 LIBS += \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\sbgEComd.lib"
+    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\projects\unix\x64\Release\sbgECom.lib"
+    #"C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\sbgEComd.lib"
+
+LIBS += -lws2_32 -lwsock32
 }
 
 ##########
