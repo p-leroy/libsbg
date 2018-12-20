@@ -6,7 +6,7 @@
 
 #include "libsbg_global.h"
 
-#include "binaryLogs/sbgEComBinaryLogs.h"
+#include "binaryLogs/binaryLogs.h"
 
 namespace Ui {
 class SbgEcomLogStatus;

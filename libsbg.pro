@@ -10,6 +10,7 @@ TARGET = libsbg
 TEMPLATE = lib
 
 DEFINES += LIBSBG_LIBRARY
+DEFINES += _WINSOCKAPI_
 
 SOURCES += libsbg.cpp \
     qwsbg.cpp \
@@ -28,7 +29,8 @@ HEADERS += libsbg.h\
     sbgecomlogdata.h \
     sbgreadfile.h
 
-INCLUDEPATH += ../../POSAR-MC/common_posar
+
+INCLUDEPATH += ../common_SWALIS
 
 FORMS += \
     qwsbg.ui \
@@ -37,49 +39,17 @@ FORMS += \
     sbgecomlogdata.ui \
     sbgreadfile.ui
 
-#######
-#######
-## UNIX
 
-unix{
-    INCLUDEPATH += \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/src" \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/common"
-    LIBS += \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/bin/libsbgECom.a"
-}
 
 ########
 ########
 ## WIN32
-
-#win32{
-#INCLUDEPATH += \
-#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/src"
-#LIBS += \
-#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/sbgECom.lib"
-#}
-
-win32{
 INCLUDEPATH += \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\src" \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\common" \
-    "C:\Documents and Settings\Administrateur\Mes documents\PAUL\SOFTWARE\common_posar"
-
+        "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src" \
+        "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/common"\
+        //"C:\Users\PC\Documents\SWALIS_portable\common_SWALIS"
 LIBS += \
-    "C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\sbgEComd.lib"
-}
+        "..\Centrale_inertielle/Ekinox/Software_Development/sbgECom/sbgECom.lib"
+LIBS += -lws2_32 -lwsock32
 
-##########
-##########
-## INSTALL
 
-target.path = $$[QT_INSTALL_LIBS]
-isEmpty(target.path) {
-    error(can\'t get QT_INSTALL_LIBS)
-}
-
-headers.path = $$[QT_INSTALL_HEADERS]/ietr/sbg
-headers.files = $$PWD/*.h
-
-INSTALLS += headers target

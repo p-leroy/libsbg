@@ -22,8 +22,28 @@
  */
 
 #include "sbgnew.h"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/sbgECom.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/protocol/protocol.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/time/sbgTime.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interface.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interfaceFile.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interfaceUdp.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/misc/sbgCrc.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogs.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogImu.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogEkf.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogGps.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogOdometer.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogMag.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogShipMotion.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogStatus.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogDvl.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogUtc.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogDebug.c"
+#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogEvent.c"
 
 #include <stdio.h>
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -149,6 +169,7 @@ int SbgNew::sbgPollingLoop()
     //
     if (errorCode == SBG_NO_ERROR)
     {
+
         emit sbgNew->sendMessage("OK *** sbgInterfaceUdpCreate");
         //
         // Create the sbgECom library and associate it with the created interfaces
@@ -207,6 +228,7 @@ int SbgNew::sbgPollingLoop()
             //
             // Unable to initialize the sbgECom
             //
+
             fprintf(stderr, "ekinoxMinimal: Unable to initialize the sbgECom library.\n");
             retValue = -1;
         }
@@ -225,6 +247,7 @@ int SbgNew::sbgPollingLoop()
         //
         // Unable to create the interface
         //
+        puts("NOK, c est nul");
         emit sbgNew->sendMessage("ERR *** sbgInterfaceUdpCreate *** unable to create the interface");
         fprintf(stderr, "ekinoxMinimal: Unable to create the interface.\n");
         retValue = -1;

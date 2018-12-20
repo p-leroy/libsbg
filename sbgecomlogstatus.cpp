@@ -316,15 +316,15 @@ void SbgEcomLogStatus::updateSbgEcomLogStatus( QByteArray data )
 
     if (generalStatus != sbgLog->generalStatus)
         update_GENERAL_STATUS( sbgLog->generalStatus );
-    if (clockStatus != sbgLog->reserved1)
-        update_CLOCK_STATUS( sbgLog->reserved1 );
+    if (clockStatus != sbgLog->reserved)
+        update_CLOCK_STATUS( sbgLog->reserved );
     if (aidingStatus != sbgLog->aidingStatus)
         update_AIDING_STATUS( sbgLog->aidingStatus );
-    if (solutionStatus != sbgLog->reserved2)
-        update_SOLUTION_STATUS( sbgLog->reserved2 );
+    if (solutionStatus != sbgLog->reserved)
+        update_SOLUTION_STATUS( sbgLog->reserved );
 
     generalStatus = sbgLog->generalStatus;
-    clockStatus = sbgLog->reserved1;
+    clockStatus = sbgLog->reserved;
     aidingStatus = sbgLog->aidingStatus;
-    solutionStatus = sbgLog->reserved2;
+    solutionStatus = sbgLog->reserved;
 }

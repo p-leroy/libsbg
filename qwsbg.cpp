@@ -1,12 +1,10 @@
 #include "qwsbg.h"
 #include "ui_qwsbg.h"
-
 #include <qthread.h>
 
 QWSbg::QWSbg(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::QWSbg)
-{
+    QWidget(parent),  ui(new Ui::QWSbg)
+   {
     ui->setupUi(this);
 
     // STATUS
@@ -26,10 +24,9 @@ QWSbg::QWSbg(QWidget *parent) :
              this->ui->sbgEcomLogData, SLOT(updateSbgEcomLogEkfNav(QByteArray)));
     connect( this->ui->sbgConnection, SIGNAL(newSbgEcomLogEventB(QByteArray)),
              this->ui->sbgEcomLogData, SLOT(updateSbgEcomLogEventB(QByteArray)));
-}
+    }
 
 QWSbg::~QWSbg()
 {
     delete ui;
 }
-

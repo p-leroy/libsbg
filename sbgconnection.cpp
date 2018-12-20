@@ -92,8 +92,10 @@ void SbgConnection::updateSbgIp()
 
 void SbgConnection::toggleSbgNew()
 {
+
     if (threadRunning)
     {
+
         emit sig_closeSbgConnection();
         this->ui->pushButton_connectToSbg->setText("Connect to SBG");
         threadRunning = false;
@@ -113,6 +115,7 @@ void SbgConnection::toggleSbgNew()
 
         //****************
         // forward signals
+        puts("Pret a envoyer les infos");
         connect( this->sbgNew, SIGNAL(sendMessage(QString)),                this, SLOT(forwardMessage(QString)) );
         connect( this->sbgNew, SIGNAL(isReady(bool)),                       this, SLOT(forwardIsReady(bool)));
         connect( this->sbgNew, SIGNAL(newSbgEcomLogStatus(QByteArray)),     this, SLOT(forwardNewSbgEcomLogStatus(QByteArray)) );
