@@ -22,28 +22,8 @@
  */
 
 #include "sbgnew.h"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/sbgECom.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/protocol/protocol.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/time/sbgTime.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interface.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interfaceFile.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/interfaces/interfaceUdp.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/misc/sbgCrc.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogs.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogImu.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogEkf.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogGps.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogOdometer.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogMag.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogShipMotion.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogStatus.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogDvl.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogUtc.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogDebug.c"
-#include "../Centrale_inertielle/Ekinox/Software_Development/sbgECom/src/binaryLogs/binaryLogEvent.c"
 
 #include <stdio.h>
-
 #include <stdlib.h>
 #include <string.h>
 

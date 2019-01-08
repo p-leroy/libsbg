@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "binaryLogs/binaryLogs.h"
+#include "binaryLogs/sbgEComBinaryLogs.h"
 
 namespace Ui {
 class SbgEcomLogData;
