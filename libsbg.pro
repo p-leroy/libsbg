@@ -48,7 +48,7 @@ win32-g++{
 DEFINES += _WINSOCKAPI_
 LIBS += -lws2_32 -lwsock32
 
-SBGPATH = "D:\InertialSDK_v3.5.0\Software Development"
+SBGPATH = "C:\Program Files\SBG Systems\Inertial SDK\Software Development"
 SOURCES += \
         $$SBGPATH/sbgECom/src/*.c \
         $$SBGPATH/sbgECom/src/binaryLogs/*.c \
