@@ -43,10 +43,10 @@ FORMS += \
 
 unix{
     INCLUDEPATH += \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/src" \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/common"
+        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/src" \
+        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/common"
     LIBS += \
-        "/opt/InertialSDK_Unix_v3.5.0/Software Development/sbgECom/bin/libsbgECom.a"
+        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/bin/libsbgECom.a"
 }
 
 ########

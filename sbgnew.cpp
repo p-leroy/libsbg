@@ -29,7 +29,7 @@
 
 #include <QCoreApplication>
 
-SbgNew* SbgNew::sbgNew = NULL;
+SbgNew* SbgNew::sbgNew = nullptr;
 unsigned char SbgNew::sbgIp3 = 0;
 unsigned char SbgNew::sbgIp2 = 0;
 unsigned char SbgNew::sbgIp1 = 0;
@@ -139,7 +139,7 @@ int SbgNew::sbgPollingLoop()
     // We can choose either UDP or serial for real time operation, or file for previously logged data parsing
     // Note interface closing is also differentiated !
     //
-    errorCode = sbgInterfaceUdpCreate(&sbgInterface, SBG_IP_ADDR(sbgIp3, sbgIp2, sbgIp1, sbgIp0), 5678, 1234);		// Example to read the data from an UDP interface
+    errorCode = sbgInterfaceUdpCreate(&sbgInterface, sbgIpAddr(sbgIp3, sbgIp2, sbgIp1, sbgIp0), 5678, 1234);		// Example to read the data from an UDP interface
     //errorCode = sbgInterfaceFileOpen(&sbgInterface, "log_16h00.bin");					// Example to read the data from a text file
     //errorCode = sbgInterfaceSerialCreate(&sbgInterface, "/dev/ttyUSB0", 115200);				// Example for Unix using a FTDI Usb2Uart converter
     //errorCode = sbgInterfaceSerialCreate(&sbgInterface, "COM4", 115200);					// Example for Windows serial communication

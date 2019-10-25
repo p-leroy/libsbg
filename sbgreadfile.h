@@ -39,7 +39,7 @@ public:
     static void storeSbgLogGpsPos( SbgLogGpsPos *log );
     static void storeSbgLogGpsVel( SbgLogGpsVel *log );
     static void storeSbgLogGpsHdt( SbgLogGpsHdt *log );
-    static SbgErrorCode onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg);
+    static SbgErrorCode receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass msgClass, SbgEComMsgId msg, const SbgBinaryLogData *pLogData, void *pUserArg);
     static int sbgPollingLoop();
 
 public slots:
