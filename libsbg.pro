@@ -4,6 +4,8 @@
 #
 #-------------------------------------------------
 
+message($$QMAKESPEC)
+
 QT       += widgets
 CONFIG += debug
 TARGET = libsbg
@@ -29,6 +31,7 @@ HEADERS += libsbg.h\
     sbgreadfile.h
 
 INCLUDEPATH += ../../POSAR-MC/common_posar
+# INCLUDEPATH += ../common_SWALIS
 
 FORMS += \
     qwsbg.ui \
@@ -47,43 +50,61 @@ unix{
         "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/common"
     LIBS += \
         "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/bin/libsbgECom.a"
-}
-
-########
-########
-## WIN32
-
-#win32{
-#INCLUDEPATH += \
-#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/src"
-#LIBS += \
-#    "C:/Documents and Settings/Administrateur/Mes documents/PAUL/Centrale_inertielle/Ekinox/Software Development/sbgECom/sbgECom.lib"
-#}
-
-win32{
-INCLUDEPATH += \
-    "../common_posar" \
-    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\src" \
-    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\common" \
-    "C:\Documents and Settings\Administrateur\Mes documents\PAUL\SOFTWARE\common_posar" \
-
-LIBS += \
-    "C:\Users\meric\Documents\DEV_mordiama\sbgECom\projects\unix\x64\Release\sbgECom.lib"
-    #"C:\Program Files\SBG Systems\Inertial SDK\Ekinox\Software Development\sbgECom\sbgEComd.lib"
-
-LIBS += -lws2_32 -lwsock32
-}
-
-##########
-##########
 ## INSTALL
-
-target.path = $$[QT_INSTALL_LIBS]
-isEmpty(target.path) {
-    error(can\'t get QT_INSTALL_LIBS)
+    target.path = $$[QT_INSTALL_LIBS]
+    isEmpty(target.path) {
+        error(can\'t get QT_INSTALL_LIBS)
+    }
+    headers.path = $$[QT_INSTALL_HEADERS]/common_ple/sbg
+    headers.files = $$PWD/*.h
+    INSTALLS += headers target
 }
 
-headers.path = $$[QT_INSTALL_HEADERS]/common_ple/sbg
-headers.files = $$PWD/*.h
+############
+############
+## WIN32-G++
 
-INSTALLS += headers target
+win32-g++{
+    DEFINES += _WINSOCKAPI_
+    LIBS += -lws2_32 -lwsock32
+
+    SBGPATH = "C:\Program Files\SBG Systems\Inertial SDK\Software Development"
+    SOURCES += \
+        $$SBGPATH/sbgECom/src/*.c \
+        $$SBGPATH/sbgECom/src/binaryLogs/*.c \
+        $$SBGPATH/sbgECom/src/commands/*.c \
+        $$SBGPATH/sbgECom/src/commands/transfer/*.c \
+        $$SBGPATH/sbgECom/src/protocol/*.c \
+        $$SBGPATH/sbgECom/common/crc/*.c \
+        $$SBGPATH/sbgECom/common/interfaces/sbgInterface.c \
+        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceFile.c \
+        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceSerialWin.c \
+        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceUdp.c \
+        $$SBGPATH/sbgECom/common/network/*.c \
+        $$SBGPATH/sbgECom/common/platform/*.c \
+        $$SBGPATH/sbgECom/common/splitbuffer/*.c \
+        $$SBGPATH/sbgECom/common/streamBuffer/*.c \
+        $$SBGPATH/sbgECom/common/swap/*.c \
+        $$SBGPATH/sbgECom/common/version/*.c
+    HEADERS += \
+        $$SBGPATH/sbgECom/src/*.h \
+        $$SBGPATH/sbgECom/src/binaryLogs/*.h \
+        $$SBGPATH/sbgECom/src/commands/*.h \
+        $$SBGPATH/sbgECom/src/commands/transfer/*.h \
+        $$SBGPATH/sbgECom/src/protocol/*.h \
+        $$SBGPATH/sbgECom/common/*.h \
+        $$SBGPATH/sbgECom/common/crc/*.h \
+        $$SBGPATH/sbgECom/common/interfaces/*.h \
+        $$SBGPATH/sbgECom/common/network/*.h \
+        $$SBGPATH/sbgECom/common/platform/*.h \
+        $$SBGPATH/sbgECom/common/splitbuffer/*.h \
+        $$SBGPATH/sbgECom/common/streamBuffer/*.h \
+        $$SBGPATH/sbgECom/common/swap/*.h \
+        $$SBGPATH/sbgECom/common/version/*.h
+    INCLUDEPATH += \
+        $$SBGPATH/sbgECom/src \
+        $$SBGPATH/sbgECom/common
+## INSTALL
+    target.path = ../lib/bin
+    INSTALLS += target
+}
