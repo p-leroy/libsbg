@@ -8,12 +8,14 @@
 
 #include <sbgEComLib.h>
 
+#include <common_tctmserver.h>
+
 class LIBSBGSHARED_EXPORT SbgNew : public QObject
 {
     Q_OBJECT
 public:
-    explicit SbgNew(QObject *parent = 0);
-    static SbgErrorCode onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg);
+    explicit SbgNew(QObject *parent = nullptr);
+    static SbgErrorCode receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass msgClass, SbgEComMsgId msg, const SbgBinaryLogData *pLogData, void *pUserArg);
     static void setSbgNew(void *ptr);
     static void setReadDataTimer(void);
     static int sbgPollingLoop();
@@ -30,7 +32,7 @@ private:
     static SbgNew *sbgNew;
 
 signals:
-    void sendMessage(QString);
+    void newMessage( QString, unsigned char=LEVEL_ERR );
     void newSbgEcomLogStatus( QByteArray array );
     void newSbgEcomLogEkfEuler( QByteArray array );
     void newSbgEcomLogEkfNav( QByteArray array );

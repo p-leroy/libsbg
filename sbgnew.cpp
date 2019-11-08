@@ -54,24 +54,30 @@ SbgNew::SbgNew(QObject *parent) : QObject(parent)
  *	\return												SBG_NO_ERROR if the received log has been used successfully.
  */
 
-SbgErrorCode SbgNew::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, const SbgBinaryLogData *pLogData, void *pUserArg)
+SbgErrorCode SbgNew::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass msgClass, SbgEComMsgId msg, const SbgBinaryLogData *pLogData, void *pUserArg)
 {
     QByteArray array;
+
+    if (msgClass != SBG_ECOM_CLASS_LOG_ECOM_0)
+    {
+        emit sbgNew->newMessage( "msgClass is not SBG_ECOM_CLASS_LOG_ECOM_0, unexpected message", LEVEL_ERR );
+        return SBG_ERROR;
+    }
 
     //
     // Handle separately each received data according to the log ID
     //
 
-    switch (logCmd)
+    switch (msg)
     {
 
     case SBG_ECOM_LOG_STATUS:
-        array = QByteArray( (char *) &pLogData->statusData, sizeof(SbgLogStatusData) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogStatusData) );
         emit sbgNew->newSbgEcomLogStatus( array );
         break;
 
     case SBG_ECOM_LOG_EKF_EULER:
-        array = QByteArray( (char *) &pLogData->ekfEulerData, sizeof(SbgLogEkfEulerData) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogEkfEulerData) );
         emit sbgNew->newSbgEcomLogEkfEuler( array );
         break;
 
@@ -79,27 +85,27 @@ SbgErrorCode SbgNew::onLogReceived(SbgEComHandle *pHandle, SbgEComCmdId logCmd, 
         break;
 
     case SBG_ECOM_LOG_EKF_NAV:
-        array = QByteArray( (char *) &pLogData->ekfNavData, sizeof(SbgLogEkfNavData) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogEkfNavData) );
         emit sbgNew->newSbgEcomLogEkfNav( array );
         break;
 
     case SBG_ECOM_LOG_EVENT_B:
-        array = QByteArray( (char *) &pLogData->eventMarker, sizeof(SbgLogEvent) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogEvent) );
         emit sbgNew->newSbgEcomLogEventB( array );
         break;
 
     case SBG_ECOM_LOG_GPS1_VEL:
-        array = QByteArray( (char *) &pLogData->gpsVelData, sizeof(SbgLogGpsVel) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogGpsVel) );
         emit sbgNew->newSbgEcomLogGPS1Vel( array );
         break;
 
     case SBG_ECOM_LOG_GPS1_POS:
-        array = QByteArray( (char *) &pLogData->gpsPosData, sizeof(SbgLogGpsPos) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogGpsPos) );
         emit sbgNew->newSbgEcomLogGPS1Pos( array );
         break;
 
     case SBG_ECOM_LOG_GPS1_HDT:
-        array = QByteArray( (char *) &pLogData->gpsHdtData, sizeof(SbgLogGpsHdt) );
+        array = QByteArray( reinterpret_cast<const char*>(pLogData), sizeof(SbgLogGpsHdt) );
         emit sbgNew->newSbgEcomLogGPS1Hdt( array );
         break;
 
@@ -128,7 +134,7 @@ int SbgNew::sbgPollingLoop()
     SbgInterface sbgInterface;
     int32 retValue = 0;
 
-    emit sbgNew->sendMessage("sbgPollingLoop *** trying to connect to: "
+    emit sbgNew->newMessage("sbgPollingLoop *** trying to connect to: "
                               + QString::number(sbgIp3) + "."
                               + QString::number(sbgIp2) + "."
                               + QString::number(sbgIp1) + "."
@@ -149,7 +155,7 @@ int SbgNew::sbgPollingLoop()
     //
     if (errorCode == SBG_NO_ERROR)
     {
-        emit sbgNew->sendMessage("OK *** sbgInterfaceUdpCreate");
+        emit sbgNew->newMessage("OK *** sbgInterfaceUdpCreate");
         //
         // Create the sbgECom library and associate it with the created interfaces
         //
@@ -163,7 +169,7 @@ int SbgNew::sbgPollingLoop()
             //
             // Define callbacks for received data
             //
-            sbgEComSetReceiveCallback(&comHandle, onLogReceived, NULL);
+            sbgEComSetReceiveLogCallback(&comHandle, receiveLogFunc, nullptr);
 
             //
             // Loop until the user exits
@@ -192,13 +198,13 @@ int SbgNew::sbgPollingLoop()
                     fprintf(stderr, "Error\n");
                 }
             }
-            emit sbgNew->sendMessage("sbgPollingLoop *** end of infinite loop");
+            emit sbgNew->newMessage("sbgPollingLoop *** end of infinite loop");
 
             //
             // Close the sbgEcom library
             //
             sbgEComClose(&comHandle);
-            emit sbgNew->sendMessage("sbgPollingLoop *** connection closed");
+            emit sbgNew->newMessage("sbgPollingLoop *** connection closed");
         }
         else
         {
@@ -213,7 +219,7 @@ int SbgNew::sbgPollingLoop()
         // Close the interface
         //
         sbgInterfaceUdpDestroy(&sbgInterface);
-        emit sbgNew->sendMessage("sbgPollingLoop *** UDP interface destroyed");
+        emit sbgNew->newMessage("sbgPollingLoop *** UDP interface destroyed");
         //sbgInterfaceSerialDestroy(&sbgInterface);
         //sbgInterfaceFileClose(&sbgInterface);
 
@@ -223,7 +229,7 @@ int SbgNew::sbgPollingLoop()
         //
         // Unable to create the interface
         //
-        emit sbgNew->sendMessage("ERR *** sbgInterfaceUdpCreate *** unable to create the interface");
+        emit sbgNew->newMessage("ERR *** sbgInterfaceUdpCreate *** unable to create the interface");
         fprintf(stderr, "ekinoxMinimal: Unable to create the interface.\n");
         retValue = -1;
     }
@@ -235,7 +241,7 @@ int SbgNew::sbgPollingLoop()
     continueExecution = true;
 
     emit sbgNew->isReady( false );
-    emit sbgNew->sendMessage("sbgPollingLoop *** end of sbgPollingLoop");
+    emit sbgNew->newMessage("sbgPollingLoop *** end of sbgPollingLoop");
     QApplication::processEvents();
     emit sbgNew->finished();
 

@@ -46,10 +46,10 @@ FORMS += \
 
 unix{
     INCLUDEPATH += \
-        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/src" \
-        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/common"
+        "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src" \
+        "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common"
     LIBS += \
-        "/opt/InertialSDK_Unix_v4.3/Software Development/sbgECom/bin/libsbgECom.a"
+        "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/bin/libsbgECom.a"
 ## INSTALL
     target.path = $$[QT_INSTALL_LIBS]
     isEmpty(target.path) {

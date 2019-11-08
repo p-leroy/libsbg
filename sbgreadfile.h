@@ -26,19 +26,19 @@ class LIBSBGSHARED_EXPORT SbgReadFile : public QWidget
     Q_OBJECT
 
 public:
-    explicit SbgReadFile(QWidget *parent = 0);
+    explicit SbgReadFile(QWidget *parent = nullptr);
     ~SbgReadFile();
     void readSettings();
     void writeSettings();
 
-    static void storeSbgEComLogEkfEuler( SbgLogEkfEulerData *log );
-    static void storeSbgEComLogEkfNav( SbgLogEkfNavData *log );
-    static void storeSbgEComLogEventB( SbgLogEvent *log );
-    static void storeSbgEComLogStatus( SbgLogStatusData *log );
-    static void storeSbgLogUtcData( SbgLogUtcData *log );
-    static void storeSbgLogGpsPos( SbgLogGpsPos *log );
-    static void storeSbgLogGpsVel( SbgLogGpsVel *log );
-    static void storeSbgLogGpsHdt( SbgLogGpsHdt *log );
+    static void storeSbgEComLogEkfEuler(const SbgLogEkfEulerData *log );
+    static void storeSbgEComLogEkfNav( const SbgLogEkfNavData *log );
+    static void storeSbgEComLogEventB( const SbgLogEvent *log );
+    static void storeSbgEComLogStatus(const SbgLogStatusData *log );
+    static void storeSbgLogUtcData( const SbgLogUtcData *log );
+    static void storeSbgLogGpsPos( const SbgLogGpsPos *log );
+    static void storeSbgLogGpsVel( const SbgLogGpsVel *log );
+    static void storeSbgLogGpsHdt( const SbgLogGpsHdt *log );
     static SbgErrorCode receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass msgClass, SbgEComMsgId msg, const SbgBinaryLogData *pLogData, void *pUserArg);
     static int sbgPollingLoop();
 
@@ -92,9 +92,9 @@ private:
     static unsigned int sbgLogGpsPos;
     static unsigned int sbgLogGpsVel;
     static unsigned int sbgLogGpsHdt;
-    static uint32 cursorPosition;
-    static int delta;
-    static int fileSize;
+    static size_t cursorPosition;
+    static double delta;
+    static size_t fileSize;
 };
 
 #endif // SBGREADFILE_H

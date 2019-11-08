@@ -17,9 +17,9 @@ bool SbgReadFile::storeGpsPos;
 unsigned int SbgReadFile::sbgLogGpsVel;
 unsigned int SbgReadFile::sbgLogGpsHdt;
 
-uint32 SbgReadFile::cursorPosition;
-int SbgReadFile::delta;
-int SbgReadFile::fileSize;
+size_t SbgReadFile::cursorPosition;
+double SbgReadFile::delta;
+size_t SbgReadFile::fileSize;
 
 QFile *SbgReadFile::sbgEComLogEkfEuler_File = nullptr;
 QTextStream *SbgReadFile::sbgEComLogEkfEuler_Strm = nullptr;
@@ -106,63 +106,63 @@ void SbgReadFile::writeSettings()
     settings.setValue("sbgreadfile/dataFile", dataFile);
 }
 
-void SbgReadFile::storeSbgEComLogEkfEuler( SbgLogEkfEulerData *log )
+void SbgReadFile::storeSbgEComLogEkfEuler( const SbgLogEkfEulerData *log )
 {
     *(sbgEComLogEkfEuler_Strm)
             << QString::number( log->timeStamp )
             << ' '
-            << QString::number( log->euler[0] )
+            << QString::number( static_cast<double>(log->euler[0]) )
             << ' '
-            << QString::number( log->euler[1] )
+            << QString::number( static_cast<double>(log->euler[1]) )
             << ' '
-            << QString::number( log->euler[2] )
+            << QString::number( static_cast<double>(log->euler[2]) )
             << ' '
-            << QString::number( log->eulerStdDev[0] )
+            << QString::number( static_cast<double>(log->eulerStdDev[0]) )
             << ' '
-            << QString::number( log->eulerStdDev[1] )
+            << QString::number( static_cast<double>(log->eulerStdDev[1]) )
             << ' '
-            << QString::number( log->eulerStdDev[2] )
+            << QString::number( static_cast<double>(log->eulerStdDev[2]) )
             << ' '
             << QString::number( log->status )
             << endl;
 }
 
-void SbgReadFile::storeSbgEComLogEkfNav( SbgLogEkfNavData *log )
+void SbgReadFile::storeSbgEComLogEkfNav( const SbgLogEkfNavData *log )
 {
     *(sbgEComLogEkfNav_Strm)
             << QString::number( log->timeStamp )
             << ' '
-            << QString::number( log->velocity[0] )
+            << QString::number( static_cast<double>(log->velocity[0]) )
             << ' '
-            << QString::number( log->velocity[1] )
+            << QString::number( static_cast<double>(log->velocity[1]) )
             << ' '
-            << QString::number( log->velocity[2] )
+            << QString::number( static_cast<double>(log->velocity[2]) )
             << ' '
-            << QString::number( log->velocityStdDev[0] )
+            << QString::number( static_cast<double>(log->velocityStdDev[0]) )
             << ' '
-            << QString::number( log->velocityStdDev[1] )
+            << QString::number( static_cast<double>(log->velocityStdDev[1]) )
             << ' '
-            << QString::number( log->velocityStdDev[2] )
+            << QString::number( static_cast<double>(log->velocityStdDev[2]) )
             << ' '
-            << QString::number( log->position[0], 'g', 16 )
+            << QString::number( static_cast<double>(log->position[0]), 'g', 16 )
             << ' '
-            << QString::number( log->position[1], 'g', 16 )
+            << QString::number( static_cast<double>(log->position[1]), 'g', 16 )
             << ' '
-            << QString::number( log->position[2], 'g', 16 )
+            << QString::number( static_cast<double>(log->position[2]), 'g', 16 )
             << ' '
-            << QString::number( log->undulation )
+            << QString::number( static_cast<double>(log->undulation) )
             << ' '
-            << QString::number( log->positionStdDev[0] )
+            << QString::number( static_cast<double>(log->positionStdDev[0]) )
             << ' '
-            << QString::number( log->positionStdDev[1] )
+            << QString::number( static_cast<double>(log->positionStdDev[1]) )
             << ' '
-            << QString::number( log->positionStdDev[2] )
+            << QString::number( static_cast<double>(log->positionStdDev[2]) )
             << ' '
             << QString::number( log->status )
             << endl;
 }
 
-void SbgReadFile::storeSbgEComLogEventB( SbgLogEvent *log )
+void SbgReadFile::storeSbgEComLogEventB(const SbgLogEvent *log )
 {
     *(sbgEComLogEventB_Strm)
             << QString::number( log->timeStamp )
@@ -180,7 +180,7 @@ void SbgReadFile::storeSbgEComLogEventB( SbgLogEvent *log )
             << endl;
 }
 
-void SbgReadFile::storeSbgEComLogStatus(SbgLogStatusData *log)
+void SbgReadFile::storeSbgEComLogStatus(const SbgLogStatusData *log)
 {
     *(sbgEComLogStatus_Strm)
             << QString::number( log->timeStamp )
@@ -200,7 +200,7 @@ void SbgReadFile::storeSbgEComLogStatus(SbgLogStatusData *log)
             << endl;
 }
 
-void SbgReadFile::storeSbgLogUtcData( SbgLogUtcData *log )
+void SbgReadFile::storeSbgLogUtcData( const SbgLogUtcData *log )
 {
     *(sbgLogUtcData_Strm)
             << QString::number( log->timeStamp )
@@ -226,7 +226,7 @@ void SbgReadFile::storeSbgLogUtcData( SbgLogUtcData *log )
             << endl;
 }
 
-void SbgReadFile::storeSbgLogGpsPos(SbgLogGpsPos *log)
+void SbgReadFile::storeSbgLogGpsPos( const SbgLogGpsPos *log)
 {
     *(sbgLogGpsPos_Strm)
             << QString::number( log->timeStamp )
@@ -241,13 +241,13 @@ void SbgReadFile::storeSbgLogGpsPos(SbgLogGpsPos *log)
             << ", "
             << QString::number( log->altitude, 'g', 16 )
             << ", "
-            << QString::number( log->undulation )
+            << QString::number( static_cast<double>(log->undulation) )
             << ", "
-            << QString::number( log->latitudeAccuracy )
+            << QString::number( static_cast<double>(log->latitudeAccuracy) )
             << ", "
-            << QString::number( log->longitudeAccuracy )
+            << QString::number( static_cast<double>(log->longitudeAccuracy) )
             << ", "
-            << QString::number( log->altitudeAccuracy )
+            << QString::number( static_cast<double>(log->altitudeAccuracy) )
             << ", "
             << QString::number( log->numSvUsed )
             << ", "
@@ -258,7 +258,7 @@ void SbgReadFile::storeSbgLogGpsPos(SbgLogGpsPos *log)
             << endl;
 }
 
-void SbgReadFile::storeSbgLogGpsVel(SbgLogGpsVel *log)
+void SbgReadFile::storeSbgLogGpsVel( const SbgLogGpsVel *log)
 {
     *(sbgLogGpsVel_Strm)
             << QString::number( log->timeStamp )
@@ -267,39 +267,39 @@ void SbgReadFile::storeSbgLogGpsVel(SbgLogGpsVel *log)
             << ' '
             << QString::number( log->timeOfWeek )
             << ' '
-            << QString::number( log->velocity[0] )
+            << QString::number( static_cast<double>(log->velocity[0]) )
             << ' '
-            << QString::number( log->velocity[1] )
+            << QString::number( static_cast<double>(log->velocity[1]) )
             << ' '
-            << QString::number( log->velocity[2] )
+            << QString::number( static_cast<double>(log->velocity[2]) )
             << ' '
-            << QString::number( log->velocityAcc[0] )
+            << QString::number( static_cast<double>(log->velocityAcc[0]) )
             << ' '
-            << QString::number( log->velocityAcc[1] )
+            << QString::number( static_cast<double>(log->velocityAcc[1]) )
             << ' '
-            << QString::number( log->velocityAcc[2] )
+            << QString::number( static_cast<double>(log->velocityAcc[2]) )
             << ' '
-            << QString::number( log->course )
+            << QString::number( static_cast<double>(log->course) )
             << ' '
-            << QString::number( log->courseAcc )
+            << QString::number( static_cast<double>(log->courseAcc) )
             << ' '
             << endl;
 }
 
-void SbgReadFile::storeSbgLogGpsHdt(SbgLogGpsHdt *log)
+void SbgReadFile::storeSbgLogGpsHdt( const SbgLogGpsHdt *log)
 {
     *(sbgLogGpsHdt_Strm)
             << QString::number(log->timeStamp)
             << ' '
             << QString::number(log->status)
             << ' '
-            << QString::number( log->timeOfWeek )
+            << QString::number(log->timeOfWeek )
             << ' '
-            << QString::number(log->heading)
+            << QString::number(static_cast<double>(log->heading))
             << ' '
-            << QString::number( log->headingAccuracy)
+            << QString::number(static_cast<double>(log->headingAccuracy))
             << ' '
-            << QString::number(log->pitch)
+            << QString::number(static_cast<double>(log->pitch))
             << ' '
             << QString::number(log->pitchAccuracy)
             << ' '
@@ -320,13 +320,13 @@ SbgErrorCode SbgReadFile::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass ms
     {
     case SBG_ECOM_LOG_STATUS:
         sbgEComLogStatus++;
-        storeSbgEComLogStatus( (SbgLogStatusData*) pLogData );
+        storeSbgEComLogStatus( reinterpret_cast<const SbgLogStatusData *>(pLogData) );
         nbSbgEComLogStatus++;
         break;
 
     case SBG_ECOM_LOG_EKF_EULER:
         sbgEComLogEkfEuler++;
-        storeSbgEComLogEkfEuler( (SbgLogEkfEulerData*) pLogData );
+        storeSbgEComLogEkfEuler( reinterpret_cast<const SbgLogEkfEulerData *>(pLogData) );
         break;
 
     case SBG_ECOM_LOG_EKF_QUAT:
@@ -334,17 +334,17 @@ SbgErrorCode SbgReadFile::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass ms
 
     case SBG_ECOM_LOG_EKF_NAV:
         sbgEComLogEkfNav++;
-        storeSbgEComLogEkfNav( (SbgLogEkfNavData*) pLogData );
+        storeSbgEComLogEkfNav( reinterpret_cast<const SbgLogEkfNavData *>(pLogData) );
         break;
 
     case SBG_ECOM_LOG_EVENT_B:
         sbgEComLogEventB++;
-        storeSbgEComLogEventB( (SbgLogEvent*) pLogData );
+        storeSbgEComLogEventB( reinterpret_cast<const SbgLogEvent *>(pLogData) );
         break;
 
     case SBG_ECOM_LOG_UTC_TIME:
         sbgLogUtcData++;
-        storeSbgLogUtcData( (SbgLogUtcData*) pLogData );
+        storeSbgLogUtcData( reinterpret_cast<const SbgLogUtcData *>(pLogData) );
         break;
 
         //*****
@@ -354,7 +354,7 @@ SbgErrorCode SbgReadFile::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass ms
         sbgLogGpsVel++;
         if ( storeGpsPos )
         {
-            storeSbgLogGpsVel( (SbgLogGpsVel*) pLogData );
+            storeSbgLogGpsVel( reinterpret_cast<const SbgLogGpsVel *>(pLogData) );
         }
         break;
 
@@ -362,7 +362,7 @@ SbgErrorCode SbgReadFile::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass ms
         sbgLogGpsPos++;
         if ( storeGpsPos )
         {
-            storeSbgLogGpsPos( (SbgLogGpsPos*) pLogData );
+            storeSbgLogGpsPos( reinterpret_cast<const SbgLogGpsPos *>(pLogData) );
         }
         break;
 
@@ -370,7 +370,7 @@ SbgErrorCode SbgReadFile::receiveLogFunc(SbgEComHandle *pHandle, SbgEComClass ms
         sbgLogGpsHdt++;
         if ( storeGpsPos )
         {
-            storeSbgLogGpsHdt( (SbgLogGpsHdt*) pLogData );
+            storeSbgLogGpsHdt( reinterpret_cast<const SbgLogGpsHdt *>(pLogData) );
         }
         break;
 
@@ -770,7 +770,7 @@ void SbgReadFile::updateStat()
     ui->label_sbgEComLogEventB->setText( QString::number( sbgEComLogEventB ) );
     ui->label_sbgLogUtcData->setText( QString::number( sbgLogUtcData ) );
     ui->label_position->setText( QString::number( cursorPosition ) );
-    ui->label_delta->setText( QString::number( delta ) );
+    ui->label_delta->setText( QString::number( delta, 'f', 0 ) );
     // GPS
     ui->label_sbgLogGpsPos->setText(QString::number( sbgLogGpsPos ));
     ui->label_sbgLogGpsVel->setText(QString::number( sbgLogGpsVel ));
