@@ -30,9 +30,6 @@ HEADERS += libsbg.h\
     sbgecomlogdata.h \
     sbgreadfile.h
 
-INCLUDEPATH += ../../POSAR-MC/common_posar
-# INCLUDEPATH += ../common_SWALIS
-
 FORMS += \
     qwsbg.ui \
     sbgconnection.ui \
@@ -68,6 +65,8 @@ win32-g++{
     DEFINES += _WINSOCKAPI_
     LIBS += -lws2_32 -lwsock32
 
+    INCLUDEPATH += ../../lib/include/common_ple/message_ple
+
     SBGPATH = "C:\Program Files\SBG Systems\Inertial SDK\Software Development"
     SOURCES += \
         $$SBGPATH/sbgECom/src/*.c \
@@ -96,7 +95,6 @@ win32-g++{
         $$SBGPATH/sbgECom/common/crc/*.h \
         $$SBGPATH/sbgECom/common/interfaces/*.h \
         $$SBGPATH/sbgECom/common/network/*.h \
-        $$SBGPATH/sbgECom/common/platform/*.h \
         $$SBGPATH/sbgECom/common/splitbuffer/*.h \
         $$SBGPATH/sbgECom/common/streamBuffer/*.h \
         $$SBGPATH/sbgECom/common/swap/*.h \
@@ -104,7 +102,14 @@ win32-g++{
     INCLUDEPATH += \
         $$SBGPATH/sbgECom/src \
         $$SBGPATH/sbgECom/common
+
 ## INSTALL
-    target.path = ../lib/bin
-    INSTALLS += target
+    target.path = ../../lib/bin
+    headers.path = ../../lib/include/common_ple/sbg
+    headers.files = sbgconnection.h \
+        libsbg_global.h \
+        sbgnew.h \
+        sbgreadfile.h
+
+    INSTALLS += headers target
 }

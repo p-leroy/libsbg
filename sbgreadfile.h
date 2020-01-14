@@ -12,7 +12,7 @@
 #include "sbgEComLib.h"
 
 #include "libsbg_global.h"
-#include "common_tctmserver.h"
+#include "message_levels.h"
 
 #define POSAR_MC_SUCCESSFUL 0
 #define POSAR_MC_FAILED 1

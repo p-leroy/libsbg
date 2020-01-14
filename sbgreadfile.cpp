@@ -90,12 +90,15 @@ SbgReadFile::~SbgReadFile()
 void SbgReadFile::readSettings()
 {
     QSettings settings("ietr", "libsbg");
+    QVariant val;
 
     dataStorageDirectory    = settings.value("sbgreadfile/dataStorageDirectory", QDir::homePath()).toString();
     dataFile                = settings.value("sbgreadfile/dataFile", "").toString();
+    val                     = settings.value("checkBox_sbgLogGpsPos", false);
 
     ui->label_currentDirectory->setText( dataStorageDirectory );
     ui->label_currentFile->setText( dataFile );
+    ui->checkBox_sbgLogGpsPos->setChecked(val.toBool());
 }
 
 void SbgReadFile::writeSettings()
@@ -104,6 +107,7 @@ void SbgReadFile::writeSettings()
 
     settings.setValue("sbgreadfile/dataStorageDirectory", dataStorageDirectory);
     settings.setValue("sbgreadfile/dataFile", dataFile);
+    settings.setValue("checkBox_sbgLogGpsPos", ui->checkBox_sbgLogGpsPos->isChecked());
 }
 
 void SbgReadFile::storeSbgEComLogEkfEuler( const SbgLogEkfEulerData *log )
