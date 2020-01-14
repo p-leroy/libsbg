@@ -24,6 +24,7 @@ SbgConnection::~SbgConnection()
 void SbgConnection::readSettings()
 {
     QSettings settings("ietr", "libsbg");
+    int port;
 
     sbgIp0 = settings.value("sbgIp0", 0).toUInt();
     sbgIp1 = settings.value("sbgIp1", 0).toUInt();
@@ -34,6 +35,13 @@ void SbgConnection::readSettings()
                                    + QString::number(sbgIp2) + "."
                                    + QString::number(sbgIp1) + "."
                                    + QString::number(sbgIp0));
+    port = settings.value("inputPort").toInt();
+    this->ui->inputPortSpinBox->setValue(port);
+    SbgNew::setLocalPort(static_cast<uint32>(port));
+
+    port = settings.value("outputPort").toInt();
+    this->ui->outputPortSpinBox->setValue(port);
+    SbgNew::setRemotePort(static_cast<uint32>(port));
 }
 
 void SbgConnection::writeSettings()
@@ -44,6 +52,14 @@ void SbgConnection::writeSettings()
     settings.setValue("sbgIp1", sbgIp1);
     settings.setValue("sbgIp2", sbgIp2);
     settings.setValue("sbgIp3", sbgIp3);
+
+    settings.setValue("inputPort", this->ui->inputPortSpinBox->value());
+    settings.setValue("outputPort", this->ui->outputPortSpinBox->value());
+}
+
+bool SbgConnection::pushButtonConnectToSbgIsChecked()
+{
+    return this->ui->pushButton_connectToSbg->isChecked();
 }
 
 void SbgConnection::updateSbgIp()
@@ -86,16 +102,14 @@ void SbgConnection::updateSbgIp()
     }
     else
     {
-        emit this->sendMessage("ERR *** IP address not valid");
+        emit this->sendMessage("ERR *** IP address not valid", LEVEL_ERR);
     }
 }
 
 void SbgConnection::toggleSbgNew()
 {
-
     if (threadRunning)
     {
-
         emit sig_closeSbgConnection();
         this->ui->pushButton_connectToSbg->setText("Connect to SBG");
         threadRunning = false;
@@ -115,8 +129,8 @@ void SbgConnection::toggleSbgNew()
 
         //****************
         // forward signals
-        puts("Pret a envoyer les infos");
-        connect( this->sbgNew, SIGNAL(sendMessage(QString)),                this, SLOT(forwardMessage(QString)) );
+        connect( this->sbgNew, SIGNAL(newMessage(QString, unsigned char)),
+                 this, SLOT(forwardMessage(QString, unsigned char)) );
         connect( this->sbgNew, SIGNAL(isReady(bool)),                       this, SLOT(forwardIsReady(bool)));
         connect( this->sbgNew, SIGNAL(newSbgEcomLogStatus(QByteArray)),     this, SLOT(forwardNewSbgEcomLogStatus(QByteArray)) );
         connect( this->sbgNew, SIGNAL(newSbgEcomLogEkfEuler(QByteArray)),   this, SLOT(forwardNewSbgEcomLogEkfEuler(QByteArray)) );
@@ -136,6 +150,12 @@ void SbgConnection::toggleSbgNew()
         thread->start();
         threadRunning = true;
     }
+}
+
+void SbgConnection::setConnectToSbg(bool state)
+{
+    if (state!=ui->pushButton_connectToSbg->isChecked())
+        ui->pushButton_connectToSbg->setChecked(state);
 }
 
 void SbgConnection::sbgConnectionRequested(bool state)
