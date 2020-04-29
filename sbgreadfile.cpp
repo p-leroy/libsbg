@@ -254,7 +254,6 @@ void SbgReadFile::storeSbgLogGpsPos( const SbgLogGpsPos *log)
             << QString::number( log->baseStationId )
             << ", "
             << QString::number( log->differentialAge )
-            << ", "
             << endl;
 }
 
@@ -677,7 +676,7 @@ void SbgReadFile::readFile(void)
         newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
                    + sbgLogGpsPos_filename, LEVEL_OK );
         *(this->sbgLogGpsPos_Strm) << "timeStamp, status, timeOfWeek, latitude, longitude, altitude, undulation, "
-                                      "latitudeAccuracy, longitudeAccuracy, altitudeAccuracy, numSvUsed, baseStationId, differentialAge," << endl;
+                                      "latitudeAccuracy, longitudeAccuracy, altitudeAccuracy, numSvUsed, baseStationId, differentialAge" << endl;
     }
     else
         newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
