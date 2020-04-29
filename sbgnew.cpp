@@ -35,6 +35,8 @@ unsigned char SbgNew::sbgIp2 = 0;
 unsigned char SbgNew::sbgIp1 = 0;
 unsigned char SbgNew::sbgIp0 = 0;
 bool SbgNew::continueExecution = true;
+uint32 SbgNew::remotePort;
+uint32 SbgNew::localPort;
 
 SbgNew::SbgNew(QObject *parent) : QObject(parent)
 {
@@ -145,7 +147,8 @@ int SbgNew::sbgPollingLoop()
     // We can choose either UDP or serial for real time operation, or file for previously logged data parsing
     // Note interface closing is also differentiated !
     //
-    errorCode = sbgInterfaceUdpCreate(&sbgInterface, sbgIpAddr(sbgIp3, sbgIp2, sbgIp1, sbgIp0), 5678, 1234);		// Example to read the data from an UDP interface
+    errorCode = sbgInterfaceUdpCreate(&sbgInterface, sbgIpAddr(sbgIp3, sbgIp2, sbgIp1, sbgIp0),
+                                      remotePort, localPort);		// Example to read the data from an UDP interface
     //errorCode = sbgInterfaceFileOpen(&sbgInterface, "log_16h00.bin");					// Example to read the data from a text file
     //errorCode = sbgInterfaceSerialCreate(&sbgInterface, "/dev/ttyUSB0", 115200);				// Example for Unix using a FTDI Usb2Uart converter
     //errorCode = sbgInterfaceSerialCreate(&sbgInterface, "COM4", 115200);					// Example for Windows serial communication
@@ -254,6 +257,16 @@ void SbgNew::updateSbgIp(unsigned char ip3, unsigned char ip2, unsigned char ip1
     sbgIp2 = ip2;
     sbgIp1 = ip1;
     sbgIp0 = ip0;
+}
+
+void SbgNew::setRemotePort(uint32 port)
+{
+    remotePort = port;
+}
+
+void SbgNew::setLocalPort(uint32 port)
+{
+    localPort = port;
 }
 
 void SbgNew::initSbg()

@@ -25,10 +25,11 @@ public:
     ~SbgConnection();
     void readSettings();
     void writeSettings();
+    bool pushButtonConnectToSbgIsChecked();
 
 signals:
     void sig_closeSbgConnection();
-    void sendMessage(QString);
+    void sendMessage(QString, unsigned char);
     void newSbgEcomLogStatus( QByteArray array );
     void newSbgEcomLogEkfEuler( QByteArray array );
     void newSbgEcomLogEkfNav( QByteArray array );
@@ -55,7 +56,7 @@ public slots:
     void toggleSbgNew();
     void setConnectToSbg(bool state);
     void sbgConnectionRequested(bool state);
-    void forwardMessage(QString str) { emit sendMessage(str); }
+    void forwardMessage(QString str, unsigned char level=LEVEL_OK) { emit sendMessage(str, level); }
     void forwardIsReady(bool state) { emit isReady(state); }
     void forwardNewSbgEcomLogStatus(    QByteArray array ) {emit newSbgEcomLogStatus(   array );}
     void forwardNewSbgEcomLogEkfEuler(  QByteArray array ) {emit newSbgEcomLogEkfEuler( array );}
