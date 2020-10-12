@@ -42,9 +42,11 @@ FORMS += \
 ## UNIX
 
 unix{
+    SBGPATH = "/opt/InertialSDK_Unix_v5.0/Software Development"
     INCLUDEPATH += \
-        "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src" \
-        "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common"
+        $$[QT_INSTALL_HEADERS]/common_ple/message_ple \
+        $$SBGPATH/sbgECom/src \
+        $$SBGPATH/sbgECom/common
     LIBS += \
         "/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/bin/libsbgECom.a"
 ## INSTALL

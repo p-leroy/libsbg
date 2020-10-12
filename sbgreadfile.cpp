@@ -65,20 +65,22 @@ SbgReadFile::SbgReadFile(QWidget *parent) :
     sbgLogGpsHdt_File = new QFile();
     sbgLogGpsHdt_Strm = new QTextStream();
 
+    connect(ui->pushButton_openFile, SIGNAL(clicked(bool)),
+            this, SLOT(chooseFile()));
+    connect(ui->pushButton_readFile, SIGNAL(clicked(bool)),
+            this, SLOT(readFile()));
+    connect(ui->pushButton_readDirectory, SIGNAL(clicked(bool)),
+            this, SLOT(readDir()));
+    connect(ui->pushButton_selectDir, SIGNAL(clicked(bool)),
+            this, SLOT(selectDir()));
+
+    connect(this, SIGNAL(newMessage(QString,unsigned char)),
+            this, SLOT(displayMessage(QString,unsigned char)));
+
+    connect(this->ui->checkBox_sbgLogGpsPos, SIGNAL(clicked(bool)), this, SLOT(updateStoreGpsPos(bool)));
+
     initStat();
     readSettings();
-
-    connect( ui->pushButton_openFile, SIGNAL(clicked(bool)),
-             this, SLOT(chooseFile()) );
-    connect( ui->pushButton_readFile, SIGNAL(clicked(bool)),
-             this, SLOT(readFile()) );
-
-    connect( this, SIGNAL(newMessage(QString,unsigned char)),
-             this, SLOT(displayMessage(QString,unsigned char)) );
-
-    connect( this->ui->checkBox_sbgLogGpsPos, SIGNAL(clicked(bool)), this, SLOT(updateStoreGpsPos(bool)) );
-
-    storeGpsPos = false;
 }
 
 SbgReadFile::~SbgReadFile()
@@ -99,6 +101,7 @@ void SbgReadFile::readSettings()
     ui->label_currentDirectory->setText( dataStorageDirectory );
     ui->label_currentFile->setText( dataFile );
     ui->checkBox_sbgLogGpsPos->setChecked(val.toBool());
+    storeGpsPos = val.toBool();
 }
 
 void SbgReadFile::writeSettings()
@@ -108,6 +111,16 @@ void SbgReadFile::writeSettings()
     settings.setValue("sbgreadfile/dataStorageDirectory", dataStorageDirectory);
     settings.setValue("sbgreadfile/dataFile", dataFile);
     settings.setValue("checkBox_sbgLogGpsPos", ui->checkBox_sbgLogGpsPos->isChecked());
+}
+
+void SbgReadFile::updateFileInfo(QString filenameWithAbsolutePath)
+{
+    fileInfo = QFileInfo(filenameWithAbsolutePath);
+    dataStorageDirectory = fileInfo.absolutePath();
+    dataFile = fileInfo.fileName();
+    ui->label_currentDirectory->setText( fileInfo.absoluteFilePath() );
+    ui->label_currentFile->setText( fileInfo.fileName() );
+    ui->label_size->setText( QString::number(fileInfo.size()) );
 }
 
 void SbgReadFile::storeSbgEComLogEkfEuler( const SbgLogEkfEulerData *log )
@@ -562,19 +575,50 @@ int SbgReadFile::chooseFile(void)
     else
     {
         emit newMessage("SbgReadFile::chooseFile *** selected file: " + filenameWithAbsolutePath, LEVEL_OK );
-        fileInfo = QFileInfo( filenameWithAbsolutePath );
-        dataStorageDirectory = fileInfo.absolutePath();
-        dataFile = fileInfo.fileName();
-        ui->label_currentDirectory->setText( fileInfo.absoluteFilePath() );
-        ui->label_currentFile->setText( fileInfo.fileName() );
-        ui->label_size->setText( QString::number(fileInfo.size()) );
+        updateFileInfo(filenameWithAbsolutePath);
         ret = POSAR_MC_SUCCESSFUL;
     }
 
     return ret;
 }
 
-void SbgReadFile::readFile(void)
+int SbgReadFile::selectDir(void)
+{
+    QString dir;
+    int ret;
+
+    ret = POSAR_MC_FAILED;
+
+    if (QDir(dataStorageDirectory).exists())
+    {
+        dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                dataStorageDirectory,
+                                                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    }
+    else
+    {
+        dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"),
+                                                QDir::homePath(),
+                                                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    }
+
+    if (QDir(dir).exists())
+    {
+        emit newMessage("SbgReadFile::selectDir *** selected dir: " + dir, LEVEL_OK );
+        dataStorageDirectory = dir;
+//        updateFileInfo("");
+        ret = POSAR_MC_SUCCESSFUL;
+    }
+    else
+    {
+        emit newMessage("SbgReadFile::selectDir *** ERR dir not valid", LEVEL_ERR);
+        ret = POSAR_MC_FAILED;
+    }
+
+    return ret;
+}
+
+void SbgReadFile::readFile(QString extractionDir)
 {
     QString sbgEComLogEkfEuler_filename;
     QString sbgEComLogEkfNav_filename;
@@ -585,143 +629,171 @@ void SbgReadFile::readFile(void)
     QString sbgLogGpsVel_filename;
     QString sbgLogGpsHdt_filename;
 
-    sbgEComLogEkfEuler_filename = dataStorageDirectory + "/sbgLogEkfEuler.dat";
-    sbgEComLogEkfNav_filename = dataStorageDirectory + "/sbgLogEkfNav.dat";
-    sbgEComLogEventB_filename = dataStorageDirectory + "/sbgLogEventB.dat";
-    sbgEComLogStatus_filename = dataStorageDirectory + "/sbgLogStatus.dat";
-    sbgLogUtcData_filename = dataStorageDirectory + "/sbgLogUtcData.dat";
-    sbgLogGpsPos_filename = dataStorageDirectory + "/sbgLogGpsPos.csv";
-    sbgLogGpsVel_filename = dataStorageDirectory + "/sbgLogGpsVel.dat";
-    sbgLogGpsHdt_filename = dataStorageDirectory + "/sbgLogGpsHdt.dat";
+    if (extractionDir.isNull())
+        extractionDir = dataStorageDirectory;
 
-    //************************************
-    //************************************
-    // create files for the extracted data
-
-    //*******************
-    // SbgEComLogEkfEuler
-    sbgEComLogEkfEuler_File->setFileName (sbgEComLogEkfEuler_filename );
-    if (sbgEComLogEkfEuler_File->open(QIODevice::WriteOnly))
+    if (fileInfo.isFile())
     {
-        sbgEComLogEkfEuler_Strm->setDevice( sbgEComLogEkfEuler_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgEComLogEkfEuler_filename, LEVEL_OK );
-        *(this->sbgEComLogEkfEuler_Strm) << "timeStamp roll pitch yaw rollStdDev pitchStdDev yawStdDev status" << endl;
+        sbgEComLogEkfEuler_filename = extractionDir + "/sbgLogEkfEuler.dat";
+        sbgEComLogEkfNav_filename = extractionDir + "/sbgLogEkfNav.dat";
+        sbgEComLogEventB_filename = extractionDir + "/sbgLogEventB.dat";
+        sbgEComLogStatus_filename = extractionDir + "/sbgLogStatus.dat";
+        sbgLogUtcData_filename = extractionDir + "/sbgLogUtcData.dat";
+        sbgLogGpsPos_filename = extractionDir + "/sbgLogGpsPos.csv";
+        sbgLogGpsVel_filename = extractionDir + "/sbgLogGpsVel.dat";
+        sbgLogGpsHdt_filename = extractionDir + "/sbgLogGpsHdt.dat";
+
+        //************************************
+        //************************************
+        // create files for the extracted data
+
+        //*******************
+        // SbgEComLogEkfEuler
+        sbgEComLogEkfEuler_File->setFileName (sbgEComLogEkfEuler_filename );
+        if (sbgEComLogEkfEuler_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgEComLogEkfEuler_Strm->setDevice( sbgEComLogEkfEuler_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgEComLogEkfEuler_filename, LEVEL_OK );
+            *(this->sbgEComLogEkfEuler_Strm) << "timeStamp roll pitch yaw rollStdDev pitchStdDev yawStdDev status" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgEComLogEkfEuler_filename, LEVEL_ERR );
+
+        //*****************
+        // SbgEComLogEkfNav
+        sbgEComLogEkfNav_File->setFileName (sbgEComLogEkfNav_filename );
+        if (sbgEComLogEkfNav_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgEComLogEkfNav_Strm->setDevice( sbgEComLogEkfNav_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgEComLogEkfNav_filename, LEVEL_OK );
+            *(this->sbgEComLogEkfNav_Strm) << "timeStamp velNorth velEast velDown velNorth_StdDev velEast_StdDev velDown_StdDev "
+                                           << "Lat Long Alt undulation Lat_StdDev Long_StdDev Alt_StdDev "
+                                           << "status"
+                                           << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgEComLogEkfNav_filename, LEVEL_ERR );
+
+        //*****************
+        // SbgEComLogEventB
+        sbgEComLogEventB_File->setFileName (sbgEComLogEventB_filename );
+        if (sbgEComLogEventB_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgEComLogEventB_Strm->setDevice( sbgEComLogEventB_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgEComLogEventB_filename, LEVEL_OK );
+            *(this->sbgEComLogEventB_Strm) << "timeStamp status timeoffset0 timeoffset1 timeoffset2 timeoffset3" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgEComLogEventB_filename, LEVEL_ERR );
+
+        //*****************
+        // SbgEComLogStatus
+        sbgEComLogStatus_File->setFileName (sbgEComLogStatus_filename );
+        if (sbgEComLogStatus_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgEComLogStatus_Strm->setDevice( sbgEComLogStatus_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgEComLogStatus_filename, LEVEL_OK );
+            *(this->sbgEComLogStatus_Strm) << "timeStamp generalStatus reserved1 comStatus aidingStatus reserved2 reserved3" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgEComLogStatus_filename, LEVEL_ERR );
+
+        //**************
+        // SbgLogUtcData
+        sbgLogUtcData_File->setFileName ( sbgLogUtcData_filename );
+        if (sbgLogUtcData_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgLogUtcData_Strm->setDevice( sbgLogUtcData_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgLogUtcData_filename, LEVEL_OK );
+            *(this->sbgLogUtcData_Strm) << "timeStamp status year month day hour minute second nanoSecond gpsTimeOfWeek" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgLogUtcData_filename, LEVEL_ERR );
+
+        //*************
+        // SbgLogGpsPos
+        sbgLogGpsPos_File->setFileName ( sbgLogGpsPos_filename );
+        if (sbgLogGpsPos_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgLogGpsPos_Strm->setDevice( sbgLogGpsPos_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgLogGpsPos_filename, LEVEL_OK );
+            *(this->sbgLogGpsPos_Strm) << "timeStamp, status, timeOfWeek, latitude, longitude, altitude, undulation, "
+                                          "latitudeAccuracy, longitudeAccuracy, altitudeAccuracy, numSvUsed, baseStationId, differentialAge" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgLogGpsPos_filename, LEVEL_ERR );
+
+        //*************
+        // SbgLogGpsVel
+        sbgLogGpsVel_File->setFileName ( sbgLogGpsVel_filename );
+        if (sbgLogGpsVel_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgLogGpsVel_Strm->setDevice( sbgLogGpsVel_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgLogGpsVel_filename, LEVEL_OK );
+            *(this->sbgLogGpsVel_Strm) << "timeStamp status timeOfWeek velocityNorth velocityEast velocityDown "
+                                          "velocityAccNorth velocityAccEast velocityAccDown course courseAcc" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgLogGpsVel_filename, LEVEL_ERR );
+
+        //*************
+        // SbgLogGpsHdt
+        sbgLogGpsHdt_File->setFileName ( sbgLogGpsHdt_filename );
+        if (sbgLogGpsHdt_File->open(QIODevice::WriteOnly | QIODevice::Truncate))
+        {
+            sbgLogGpsHdt_Strm->setDevice( sbgLogGpsHdt_File );
+            newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
+                       + sbgLogGpsHdt_filename, LEVEL_OK );
+            *(this->sbgLogGpsHdt_Strm) << "timeStamp status timeOfWeek heading headingAcc pitch pitchAcc" << endl;
+        }
+        else
+            newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
+                       + sbgLogGpsHdt_filename, LEVEL_ERR );
+
+        QApplication::processEvents();
+
+        ui->label_size->setText( QString::number(fileInfo.size()) );
+        fileSize = fileInfo.size();
+        initStat();
+        sbgPollingLoop();
     }
     else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgEComLogEkfEuler_filename, LEVEL_ERR );
-
-    //*****************
-    // SbgEComLogEkfNav
-    sbgEComLogEkfNav_File->setFileName (sbgEComLogEkfNav_filename );
-    if (sbgEComLogEkfNav_File->open(QIODevice::WriteOnly))
     {
-        sbgEComLogEkfNav_Strm->setDevice( sbgEComLogEkfNav_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgEComLogEkfNav_filename, LEVEL_OK );
-        *(this->sbgEComLogEkfNav_Strm) << "timeStamp velNorth velEast velDown velNorth_StdDev velEast_StdDev velDown_StdDev "
-                                       << "Lat Long Alt undulation Lat_StdDev Long_StdDev Alt_StdDev "
-                                       << "status"
-                                       << endl;
+        newMessage("SbgReadFile::readFile *** file does not exist", LEVEL_ERR );
     }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgEComLogEkfNav_filename, LEVEL_ERR );
+}
 
-    //*****************
-    // SbgEComLogEventB
-    sbgEComLogEventB_File->setFileName (sbgEComLogEventB_filename );
-    if (sbgEComLogEventB_File->open(QIODevice::WriteOnly))
-    {
-        sbgEComLogEventB_Strm->setDevice( sbgEComLogEventB_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgEComLogEventB_filename, LEVEL_OK );
-        *(this->sbgEComLogEventB_Strm) << "timeStamp status timeoffset0 timeoffset1 timeoffset2 timeoffset3" << endl;
+void SbgReadFile::readDir(void)
+{
+    QDir dir = QDir();
+    QString binDir;
+    QString hour;
+    QString extractionDir;
+    QDirIterator it(this->dataStorageDirectory, QStringList() << "*.bin", QDir::NoFilter, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        updateFileInfo(it.next());
+        binDir = fileInfo.absolutePath();
+        hour = fileInfo.baseName().split("_").last();
+        dir.setPath(binDir);
+        dir.mkdir(hour);
+        extractionDir = binDir + "/" + hour;
+        readFile(extractionDir);
+        emit newMessage("SbgReadFile::readDir *** extraction in " + extractionDir, LEVEL_OK);
     }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgEComLogEventB_filename, LEVEL_ERR );
-
-    //*****************
-    // SbgEComLogStatus
-    sbgEComLogStatus_File->setFileName (sbgEComLogStatus_filename );
-    if (sbgEComLogStatus_File->open(QIODevice::WriteOnly))
-    {
-        sbgEComLogStatus_Strm->setDevice( sbgEComLogStatus_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgEComLogStatus_filename, LEVEL_OK );
-        *(this->sbgEComLogStatus_Strm) << "timeStamp generalStatus reserved1 comStatus aidingStatus reserved2 reserved3" << endl;
-    }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgEComLogStatus_filename, LEVEL_ERR );
-
-    //**************
-    // SbgLogUtcData
-    sbgLogUtcData_File->setFileName ( sbgLogUtcData_filename );
-    if (sbgLogUtcData_File->open(QIODevice::WriteOnly))
-    {
-        sbgLogUtcData_Strm->setDevice( sbgLogUtcData_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgLogUtcData_filename, LEVEL_OK );
-        *(this->sbgLogUtcData_Strm) << "timeStamp status year month day hour minute second nanoSecond gpsTimeOfWeek" << endl;
-    }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgLogUtcData_filename, LEVEL_ERR );
-
-    //*************
-    // SbgLogGpsPos
-    sbgLogGpsPos_File->setFileName ( sbgLogGpsPos_filename );
-    if (sbgLogGpsPos_File->open(QIODevice::WriteOnly))
-    {
-        sbgLogGpsPos_Strm->setDevice( sbgLogGpsPos_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgLogGpsPos_filename, LEVEL_OK );
-        *(this->sbgLogGpsPos_Strm) << "timeStamp, status, timeOfWeek, latitude, longitude, altitude, undulation, "
-                                      "latitudeAccuracy, longitudeAccuracy, altitudeAccuracy, numSvUsed, baseStationId, differentialAge" << endl;
-    }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgLogGpsPos_filename, LEVEL_ERR );
-
-    //*************
-    // SbgLogGpsVel
-    sbgLogGpsVel_File->setFileName ( sbgLogGpsVel_filename );
-    if (sbgLogGpsVel_File->open(QIODevice::WriteOnly))
-    {
-        sbgLogGpsVel_Strm->setDevice( sbgLogGpsVel_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgLogGpsVel_filename, LEVEL_OK );
-        *(this->sbgLogGpsVel_Strm) << "timeStamp status timeOfWeek velocityNorth velocityEast velocityDow "
-                                      "velocityAccNorth velocityAccEast velocityAccDown course courseAcc" << endl;
-    }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgLogGpsVel_filename, LEVEL_ERR );
-
-    //*************
-    // SbgLogGpsHdt
-    sbgLogGpsHdt_File->setFileName ( sbgLogGpsHdt_filename );
-    if (sbgLogGpsHdt_File->open(QIODevice::WriteOnly))
-    {
-        sbgLogGpsHdt_Strm->setDevice( sbgLogGpsHdt_File );
-        newMessage("[ OK  ] SbgReadFile::readFile *** file created successfully: "
-                   + sbgLogGpsHdt_filename, LEVEL_OK );
-        *(this->sbgLogGpsHdt_Strm) << "timeStamp status timeOfWeek heading headingAcc pitch pitchAcc" << endl;
-    }
-    else
-        newMessage("[ ERR ]SbgReadFile::readFile *** impossible to create file: "
-                   + sbgLogGpsHdt_filename, LEVEL_ERR );
-
-    QApplication::processEvents();
-
-    fileInfo = QFileInfo( dataStorageDirectory + "/" + dataFile );
-    ui->label_size->setText( QString::number(fileInfo.size()) );
-    fileSize = fileInfo.size();
-    initStat();
-    sbgPollingLoop();
 }
 
 void SbgReadFile::displayMessage(QString str, unsigned char level)

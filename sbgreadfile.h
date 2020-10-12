@@ -8,6 +8,8 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QTextStream>
+#include <QDebug>
+#include <QDirIterator>
 
 #include "sbgEComLib.h"
 
@@ -30,6 +32,7 @@ public:
     ~SbgReadFile();
     void readSettings();
     void writeSettings();
+    void updateFileInfo(QString filenameWithAbsolutePath);
 
     static void storeSbgEComLogEkfEuler(const SbgLogEkfEulerData *log );
     static void storeSbgEComLogEkfNav( const SbgLogEkfNavData *log );
@@ -44,7 +47,9 @@ public:
 
 public slots:
     int chooseFile(void);
-    void readFile(void);
+    int selectDir(void);
+    void readFile(QString extractionDir="");
+    void readDir(void);
     void displayMessage( QString str, unsigned char level );
     void initStat();
     void updateStat();

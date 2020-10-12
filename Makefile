@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DLIBSBG_LIBRARY -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -g -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I../../POSAR-MC/common_posar -I/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src -I/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/common -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -I. -isystem /usr/include/libdrm -I. -I/usr/lib64/qt5/mkspecs/linux-g++
+INCPATH       = -I. -isystem /usr/include/qt5/common_ple/message_ple -I/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src -I/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/common -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtWidgets -isystem /usr/include/qt5/QtGui -isystem /usr/include/qt5/QtCore -I. -I. -I/usr/lib64/qt5/mkspecs/linux-g++
 QMAKE         = /usr/bin/qmake-qt5
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -763,7 +763,7 @@ moc_qwsbg.cpp: qwsbg.h \
 		libsbg_global.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include qwsbg.h -o moc_qwsbg.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include qwsbg.h -o moc_qwsbg.cpp
 
 moc_sbgconnection.cpp: sbgconnection.h \
 		libsbg_global.h \
@@ -828,10 +828,9 @@ moc_sbgconnection.cpp: sbgconnection.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include sbgconnection.h -o moc_sbgconnection.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include sbgconnection.h -o moc_sbgconnection.cpp
 
 moc_sbgnew.cpp: sbgnew.h \
 		libsbg_global.h \
@@ -895,10 +894,9 @@ moc_sbgnew.cpp: sbgnew.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include sbgnew.h -o moc_sbgnew.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include sbgnew.h -o moc_sbgnew.cpp
 
 moc_sbgecomlogstatus.cpp: sbgecomlogstatus.h \
 		libsbg_global.h \
@@ -935,7 +933,7 @@ moc_sbgecomlogstatus.cpp: sbgecomlogstatus.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogUtc.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include sbgecomlogstatus.h -o moc_sbgecomlogstatus.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include sbgecomlogstatus.h -o moc_sbgecomlogstatus.cpp
 
 moc_sbgecomlogdata.cpp: sbgecomlogdata.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogs.h \
@@ -971,7 +969,7 @@ moc_sbgecomlogdata.cpp: sbgecomlogdata.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogUtc.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include sbgecomlogdata.h -o moc_sbgecomlogdata.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include sbgecomlogdata.h -o moc_sbgecomlogdata.cpp
 
 moc_sbgreadfile.cpp: sbgreadfile.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComLib.h \
@@ -1035,10 +1033,9 @@ moc_sbgreadfile.cpp: sbgreadfile.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
 		libsbg_global.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		moc_predefs.h \
 		/usr/lib64/qt5/bin/moc
-	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/home/pleroy/DEV/POSAR-MC/common_posar -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/7 -I/usr/include/c++/7/x86_64-redhat-linux -I/usr/include/c++/7/backward -I/usr/lib/gcc/x86_64-redhat-linux/7/include -I/usr/local/include -I/usr/include -I/usr/include/c++/8 -I/usr/include/c++/8/x86_64-redhat-linux -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-redhat-linux/8/include -I/usr/local/include -I/usr/include sbgreadfile.h -o moc_sbgreadfile.cpp
+	/usr/lib64/qt5/bin/moc $(DEFINES) --include /home/pleroy/DEV/COMMON/libsbg/moc_predefs.h -I/usr/lib64/qt5/mkspecs/linux-g++ -I/home/pleroy/DEV/COMMON/libsbg -I/usr/include/qt5/common_ple/message_ple -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/src' -I'/opt/InertialSDK_Unix_v5.0/Software Development/sbgECom/common' -I/usr/include/qt5 -I/usr/include/qt5/QtWidgets -I/usr/include/qt5/QtGui -I/usr/include/qt5/QtCore -I/usr/include/c++/9 -I/usr/include/c++/9/x86_64-redhat-linux -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-redhat-linux/9/include -I/usr/local/include -I/usr/include sbgreadfile.h -o moc_sbgreadfile.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1114,7 +1111,6 @@ ui_qwsbg.h: qwsbg.ui \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		libsbg_global.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/binaryLogs/sbgEComBinaryLogs.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/common/sbgCommon.h \
@@ -1274,7 +1270,6 @@ qwsbg.o: qwsbg.cpp qwsbg.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		sbgecomlogdata.h \
 		sbgecomlogstatus.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qwsbg.o qwsbg.cpp
@@ -1342,7 +1337,6 @@ sbgconnection.o: sbgconnection.cpp sbgconnection.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		ui_sbgconnection.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sbgconnection.o sbgconnection.cpp
 
@@ -1407,8 +1401,7 @@ sbgnew.o: sbgnew.cpp sbgnew.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSensor.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/commands/sbgEComCmdSettings.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
-		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h
+		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sbgnew.o sbgnew.cpp
 
 sbgecomlogstatus.o: sbgecomlogstatus.cpp sbgecomlogstatus.h \
@@ -1544,7 +1537,6 @@ sbgreadfile.o: sbgreadfile.cpp sbgreadfile.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComVersion.h \
 		/opt/InertialSDK_Unix_v5.0/Software\ Development/sbgECom/src/sbgEComGetVersion.h \
 		libsbg_global.h \
-		../../POSAR-MC/common_posar/common_tctmserver.h \
 		ui_sbgreadfile.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o sbgreadfile.o sbgreadfile.cpp
 
