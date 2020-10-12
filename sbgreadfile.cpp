@@ -102,6 +102,8 @@ void SbgReadFile::readSettings()
     ui->label_currentFile->setText( dataFile );
     ui->checkBox_sbgLogGpsPos->setChecked(val.toBool());
     storeGpsPos = val.toBool();
+
+    updateFileInfo(dataStorageDirectory + "/" + dataFile);
 }
 
 void SbgReadFile::writeSettings()
@@ -116,11 +118,26 @@ void SbgReadFile::writeSettings()
 void SbgReadFile::updateFileInfo(QString filenameWithAbsolutePath)
 {
     fileInfo = QFileInfo(filenameWithAbsolutePath);
-    dataStorageDirectory = fileInfo.absolutePath();
-    dataFile = fileInfo.fileName();
-    ui->label_currentDirectory->setText( fileInfo.absoluteFilePath() );
-    ui->label_currentFile->setText( fileInfo.fileName() );
-    ui->label_size->setText( QString::number(fileInfo.size()) );
+    if (fileInfo.isDir())
+    {
+        dataStorageDirectory = fileInfo.absoluteFilePath();
+        dataFile = "?";
+        ui->label_currentDirectory->setText( fileInfo.absoluteFilePath() );
+        ui->label_currentFile->setText("?");
+        ui->label_size->setText("?");
+    }
+    else if (fileInfo.isFile())
+    {
+        dataStorageDirectory = fileInfo.absolutePath();
+        dataFile = fileInfo.fileName();
+        ui->label_currentDirectory->setText( fileInfo.absoluteFilePath() );
+        ui->label_currentFile->setText( fileInfo.fileName() );
+        ui->label_size->setText( QString::number(fileInfo.size()) );
+    }
+    else
+    {
+        emit sbgReadFile->newMessage("SbgReadFile::updateFileInfo", LEVEL_ERR);
+    }
 }
 
 void SbgReadFile::storeSbgEComLogEkfEuler( const SbgLogEkfEulerData *log )
@@ -527,14 +544,24 @@ int SbgReadFile::sbgPollingLoop()
     continueExecution = true;
 
     sbgReadFile->updateStat();
+
     sbgEComLogEkfEuler_Strm->flush();
     sbgEComLogEkfNav_Strm->flush();
     sbgEComLogEventB_Strm->flush();
+    sbgEComLogStatus_Strm->flush();
+    sbgLogUtcData_Strm->flush();
+    sbgLogGpsPos_Strm->flush();
+    sbgLogGpsVel_Strm->flush();
+    sbgLogGpsHdt_Strm->flush();
+
     sbgEComLogEkfEuler_File->close();
     sbgEComLogEkfNav_File->close();
     sbgEComLogEventB_File->close();
     sbgEComLogStatus_File->close();
     sbgLogUtcData_File->close();
+    sbgLogGpsPos_File->close();
+    sbgLogGpsVel_File->close();
+    sbgLogGpsHdt_File->close();
 
     emit sbgReadFile->newMessage( "sbgPollingLoop *** end of sbgPollingLoop", LEVEL_OK);
 
@@ -605,8 +632,7 @@ int SbgReadFile::selectDir(void)
     if (QDir(dir).exists())
     {
         emit newMessage("SbgReadFile::selectDir *** selected dir: " + dir, LEVEL_OK );
-        dataStorageDirectory = dir;
-//        updateFileInfo("");
+        updateFileInfo(dir);
         ret = POSAR_MC_SUCCESSFUL;
     }
     else
@@ -629,7 +655,7 @@ void SbgReadFile::readFile(QString extractionDir)
     QString sbgLogGpsVel_filename;
     QString sbgLogGpsHdt_filename;
 
-    if (extractionDir.isNull())
+    if (extractionDir.isEmpty())
         extractionDir = dataStorageDirectory;
 
     if (fileInfo.isFile())
