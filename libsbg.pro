@@ -69,38 +69,38 @@ win32-g++{
 
     INCLUDEPATH += ../../lib/include/common_ple/message_ple
 
-    SBGPATH = "C:\Program Files\SBG Systems\Inertial SDK\Software Development"
+    SBGPATH = "C:/Program Files/SBG Systems/Inertial SDK/Software Development"
     SOURCES += \
-        $$SBGPATH/sbgECom/src/*.c \
-        $$SBGPATH/sbgECom/src/binaryLogs/*.c \
-        $$SBGPATH/sbgECom/src/commands/*.c \
-        $$SBGPATH/sbgECom/src/commands/transfer/*.c \
-        $$SBGPATH/sbgECom/src/protocol/*.c \
-        $$SBGPATH/sbgECom/common/crc/*.c \
-        $$SBGPATH/sbgECom/common/interfaces/sbgInterface.c \
-        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceFile.c \
-        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceSerialWin.c \
-        $$SBGPATH/sbgECom/common/interfaces/sbgInterfaceUdp.c \
-        $$SBGPATH/sbgECom/common/network/*.c \
-        $$SBGPATH/sbgECom/common/platform/*.c \
-        $$SBGPATH/sbgECom/common/splitbuffer/*.c \
-        $$SBGPATH/sbgECom/common/streamBuffer/*.c \
-        $$SBGPATH/sbgECom/common/swap/*.c \
-        $$SBGPATH/sbgECom/common/version/*.c
+        $$files($$SBGPATH/sbgECom/src/*.c) \
+        $$files($$SBGPATH/sbgECom/src/binaryLogs/*.c) \
+        $$files($$SBGPATH/sbgECom/src/commands/*.c) \
+        $$files($$SBGPATH/sbgECom/src/commands/transfer/*.c) \
+        $$files($$SBGPATH/sbgECom/src/protocol/*.c) \
+        $$files($$SBGPATH/sbgECom/common/crc/*.c) \
+        $$files($$SBGPATH/sbgECom/common/interfaces/sbgInterface.c) \
+        $$files($$SBGPATH/sbgECom/common/interfaces/sbgInterfaceFile.c) \
+        $$files($$SBGPATH/sbgECom/common/interfaces/sbgInterfaceSerialWin.c) \
+        $$files($$SBGPATH/sbgECom/common/interfaces/sbgInterfaceUdp.c) \
+        $$files($$SBGPATH/sbgECom/common/network/*.c) \
+        $$files($$SBGPATH/sbgECom/common/platform/*.c) \
+        $$files($$SBGPATH/sbgECom/common/splitbuffer/*.c) \
+        $$files($$SBGPATH/sbgECom/common/streamBuffer/*.c) \
+        $$files($$SBGPATH/sbgECom/common/swap/*.c) \
+        $$files($$SBGPATH/sbgECom/common/version/*.c)
     HEADERS += \
-        $$SBGPATH/sbgECom/src/*.h \
-        $$SBGPATH/sbgECom/src/binaryLogs/*.h \
-        $$SBGPATH/sbgECom/src/commands/*.h \
-        $$SBGPATH/sbgECom/src/commands/transfer/*.h \
-        $$SBGPATH/sbgECom/src/protocol/*.h \
-        $$SBGPATH/sbgECom/common/*.h \
-        $$SBGPATH/sbgECom/common/crc/*.h \
-        $$SBGPATH/sbgECom/common/interfaces/*.h \
-        $$SBGPATH/sbgECom/common/network/*.h \
-        $$SBGPATH/sbgECom/common/splitbuffer/*.h \
-        $$SBGPATH/sbgECom/common/streamBuffer/*.h \
-        $$SBGPATH/sbgECom/common/swap/*.h \
-        $$SBGPATH/sbgECom/common/version/*.h
+        $$files($$SBGPATH/sbgECom/src/*.h) \
+        $$files($$SBGPATH/sbgECom/src/binaryLogs/*.h) \
+        $$files($$SBGPATH/sbgECom/src/commands/*.)h \
+        $$files($$SBGPATH/sbgECom/src/commands/transfer/*.h) \
+        $$files($$SBGPATH/sbgECom/src/protocol/*.h) \
+        $$files($$SBGPATH/sbgECom/common/*.h) \
+        $$files($$SBGPATH/sbgECom/common/crc/*.h) \
+        $$files($$SBGPATH/sbgECom/common/interfaces/*.h) \
+        $$files($$SBGPATH/sbgECom/common/network/*.h) \
+        $$files($$SBGPATH/sbgECom/common/splitbuffer/*.h) \
+        $$files($$SBGPATH/sbgECom/common/streamBuffer/*.h) \
+        $$files($$SBGPATH/sbgECom/common/swap/*.h) \
+        $$files($$SBGPATH/sbgECom/common/version/*.h)
     INCLUDEPATH += \
         $$SBGPATH/sbgECom/src \
         $$SBGPATH/sbgECom/common
